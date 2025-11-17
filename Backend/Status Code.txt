@@ -1,0 +1,16 @@
+1	1xx: Informational Response
+		It is used to show that the request was received, and the process is continuing.
+		
+2	2xx: Successful
+		It is used to show that the request was successfully received, understood, and accepted.
+		
+3	3xx: Redirection
+		It is used to show that further action needs to be taken to complete the request.
+		
+4	4xx: Client Error
+		It is used to show that the request contains bad syntax or cannot be fulfilled.
+		400 Bad Request	,401 Unauthorized	,403 Forbidden	,404 No Found	
+		
+5	5xx: Server Error
+		It is used to show that the server is failed to fulfill an apparently valid request.
+		500 Internal Server Error ,501 Not Implemented ,502 Bad Gateway ,503 Service Unavailable ,504 Gateway Timeout	

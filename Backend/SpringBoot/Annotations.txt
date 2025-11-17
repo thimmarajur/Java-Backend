@@ -1,0 +1,19 @@
+1. @RestController  --> Class Level  --> @ResponseBody + @Controller
+2. @Autowired  --> Variable Level --> Automatically inject beans into your components, such as services, repositories, or controllers.
+3. @Qualifier("mas") --> When there are multiple beans of the same type, @Qualifier helps specify which bean should be injected.
+4. @PostMapping("/v1/get_users") --> Method Level --> Used to map HTTP POST requests to specific handler methods in a controller.
+5. @RequestHeader String agencyId --> Allows you to retrieve header values from the incoming HTTP request and use them within your 			application logic.
+6. @RequestBody String data --> Used to bind the HTTP request body to a method parameter in a controller.
+7. @Service --> Indicates that the class is a service component in the business logic layer.
+8. @Repository --> Indicate that the class performs data access operations, typically interacting with a database
+9. @Component --> Automatically detected and registered as beans in the Spring application context during component scanning.
+10. @Value("${app.schema}") --> Allows you to specify values for properties directly from property files.(Single Value ata a time)
+11. @Cacheable("ticketConfig") --> if it is, the cached result is returned. If not, the method is executed, and the result is then stored in the cache for future use.
+12. @NotNull -->  It's commonly used for validating method arguments and ensuring that certain variables or fields are not null.
+13. @Configuration --> indicate that a class contains bean definitions and is a source of bean definitions for the Spring application context.
+14. @Bean(name = "mas") --> The method annotated with @Bean returns an object that will be registered as a Spring bean.
+15. @ConfigurationProperties("mas.datasource") --> bind a group of properties to a Java object from properties file.
+16. @Primary --> indicate that a specific bean should be given preference when multiple beans of the same type are present in the Spring application
+17. @Data --> automatically generating boilerplate code ( Generates getter and setter methods for all fields in the class ).
+18. @JsonProperty("device_id") -->  It is used to specify how a field or method in a Java class should be mapped to a JSON property
+19. @SpringBootApplication  --> @Configuration + @EnableAutoConfiguration + @ComponentScans

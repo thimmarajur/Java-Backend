@@ -1,0 +1,47 @@
+-----Properties File------
+
+masmysql.datasource.url=jdbc:mysql://localhost:11306/masrndqa?autoReconnect=true&useLegacyDatetimeCode=false&serverTimezone=America/New_York
+masmysql.datasource.driverClassName=com.mysql.jdbc.Driver
+masmysql.datasource.jdbc-url=jdbc:mysql://localhost:11306/masrndqa?autoReconnect=true&useLegacyDatetimeCode=false
+masmysql.datasource.username=masrndqa
+masmysql.datasource.password=ma5r9dq8cl0ud
+
+
+
+-----DataSource Config inside core of service --------
+Class is annotated with @Configuration
+
+{
+    @Bean(name = "masmysql")
+    @ConfigurationProperties("masmysql.datasource")
+    public DataSource masmysqlDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean(name = "masmysqlTemplate")
+    public JdbcTemplate masmysqlTemplate(@Qualifier("masmysql") DataSource ds) {
+        return new JdbcTemplate(ds);
+    }
+	
+}	
+	
+
+-----------DBUtil---------------
+	@Autowired
+	@Qualifier("masmysqlTemplate")
+    JdbcTemplate masmysqlTemplate;
+
+	public JdbcTemplate getTemplate() {
+		
+		JdbcTemplate jdbcTemplate = masmysqlTemplate;
+		return jdbcTemplate;
+		
+	}
+
+------DAO Layer----------------
+    @Autowired
+    DBUtil dbUtil;
+	
+	JdbcTemplate jdbcTemplate = dbUtil.getTemplate();			    
+	List<UserData> userData = (List<UserData>) jdbcTemplate.query(sqlQuery,new BeanPropertyRowMapper<>(UserData.class),userName);
+	jdbcTemplate.update(sqlQuery,userName);

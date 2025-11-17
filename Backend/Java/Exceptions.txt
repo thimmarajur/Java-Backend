@@ -1,0 +1,170 @@
+1. Checked vs. Unchecked exceptions – what’s the difference?
+	
+	In Java, exceptions are categorized into two main types: checked exceptions and unchecked exceptions. The key difference between them lies in how they are enforced by the compiler and their intended use cases. Here's a detailed explanation:
+
+	a. Checked Exceptions
+		Definition: Checked exceptions are exceptions that the compiler requires you to handle explicitly. They represent conditions that a well-written application should anticipate and recover from.
+
+		Examples:
+
+			IOException (e.g., file not found, network issues).
+
+			SQLException (e.g., database access errors).
+
+			ClassNotFoundException (e.g., class not found at runtime).
+
+		Characteristics:
+
+			Compiler Enforcement: The compiler checks that these exceptions are either:
+
+			Caught using a try-catch block.
+
+			Declared in the method signature using the throws keyword.
+
+			Recoverable: Checked exceptions typically represent scenarios where recovery is possible (e.g., retrying a file operation or notifying the user).
+
+			Usage: Used for scenarios where the application can reasonably be expected to handle the exception.
+			
+			
+	b. Unchecked Exceptions
+		Definition: Unchecked exceptions are exceptions that the compiler does not require you to handle explicitly. They represent programming errors or runtime conditions that are usually not recoverable.
+
+		Examples:
+
+			NullPointerException (e.g., accessing a null object).
+
+			ArrayIndexOutOfBoundsException (e.g., accessing an array beyond its bounds).
+
+			ArithmeticException (e.g., division by zero).
+
+		Characteristics:
+
+			No Compiler Enforcement: You are not required to catch or declare unchecked exceptions.
+
+			Runtime Errors: These exceptions typically indicate bugs in the code (e.g., logic errors, invalid assumptions).
+
+			Usage: Used for scenarios where the application cannot reasonably recover (e.g., programming errors).
+			
+			
+	When to Use Which
+		Checked Exceptions:
+
+			Use for conditions that a well-written application should anticipate and handle (e.g., file I/O, network issues).
+
+			Encourage robust error handling and recovery.
+
+		Unchecked Exceptions:
+
+			Use for programming errors or conditions that are not expected to be recoverable (e.g., null pointers, invalid arguments).
+
+			Indicate bugs that need to be fixed in the code.
+
+	Best Practices
+		Checked Exceptions:
+
+			Handle exceptions gracefully (e.g., log the error, retry the operation, or notify the user).
+
+			Avoid overusing checked exceptions for conditions that are not truly recoverable.
+
+		Unchecked Exceptions:
+
+			Use for programming errors that should be fixed during development.
+
+			Avoid catching unchecked exceptions unless you have a specific recovery strategy.
+			
+			
+	Summary
+		Checked Exceptions: Represent recoverable conditions; must be handled explicitly.
+
+		Unchecked Exceptions: Represent programming errors; not required to be handled.
+
+		Use checked exceptions for anticipated, recoverable scenarios and unchecked exceptions for unexpected, unrecoverable errors. Understanding the difference helps you write more robust and maintainable code.
+
+
+2.	Global Exception Handling
+
+	**Global Exception Handling** is a centralized mechanism for managing exceptions that occur anywhere in an application, preventing the application from crashing and ensuring consistent, user-friendly error responses.
+
+	In large applications, especially REST APIs built with **Spring Boot**, handling exceptions within every controller's method (`try-catch` blocks) leads to code duplication and inconsistency. Global exception handling solves this by delegating all unhandled exceptions to a single, central class.
+
+	-----
+
+	### How Global Exception Handling Works in Spring Boot
+
+	Spring Boot provides two primary annotations to implement centralized exception handling for web applications (REST APIs):
+
+	1.  **`@ControllerAdvice`**: This annotation marks a class as a global exception handler. It allows the class to "advise" all controllers in the application, making its handler methods applicable application-wide.
+
+		  * For REST APIs, you often use the specialized **`@RestControllerAdvice`**, which is essentially `@ControllerAdvice` + `@ResponseBody`, ensuring that the response object is automatically converted to JSON/XML.
+
+	2.  **`@ExceptionHandler`**: This annotation is used inside the `@ControllerAdvice` class on a method. It maps a specific **exception type** (e.g., `ResourceNotFoundException.class`) to the method that should handle it.
+
+	-----
+
+	### 🛠️ Implementation Example
+
+	A typical global exception handler class looks like this:
+
+	```java
+	import org.springframework.http.HttpStatus;
+	import org.springframework.http.ResponseEntity;
+	import org.springframework.web.bind.annotation.ControllerAdvice;
+	import org.springframework.web.bind.annotation.ExceptionHandler;
+
+	// Use @RestControllerAdvice if building a pure REST API
+	@ControllerAdvice 
+	public class GlobalExceptionHandler {
+
+		// 1. Handler for a Custom Exception
+		@ExceptionHandler(ResourceNotFoundException.class)
+		public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException ex) {
+			// Create a structured error response object
+			ErrorDetails error = new ErrorDetails(
+				HttpStatus.NOT_FOUND.value(), 
+				ex.getMessage(), 
+				System.currentTimeMillis()
+			);
+			// Return a response entity with the desired HTTP status
+			return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+		}
+
+		// 2. Handler for a Generic/Catch-All Exception
+		@ExceptionHandler(Exception.class)
+		public ResponseEntity<ErrorDetails> handleGlobalException(Exception ex) {
+			ErrorDetails error = new ErrorDetails(
+				HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				"An unexpected error occurred: " + ex.getMessage(),
+				System.currentTimeMillis()
+			);
+			// Returns HTTP 500 (Internal Server Error)
+			return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	```
+
+	In your Controller method, you simply throw the exception, and the global handler automatically catches it:
+
+	```java
+	@RestController
+	@RequestMapping("/api/users")
+	public class UserController {
+		@GetMapping("/{id}")
+		public User getUser(@PathVariable long id) {
+			User user = userService.findById(id); 
+			
+			if (user == null) {
+				// Throwing the exception directly
+				throw new ResourceNotFoundException("User not found with ID: " + id);
+			}
+			return user;
+		}
+	}
+	```
+
+	### Key Benefits
+
+	  * **Centralization**: All exception-handling logic is in one place, making it easy to manage and update.
+	  * **Consistency**: Ensures that all API error responses follow a uniform format (e.g., a standard JSON structure with `status`, `message`, and `timestamp`).
+	  * **Decoupling**: Separates the **error-handling logic** from the **business logic** in your controllers and services, resulting in cleaner, more readable code.
+
+

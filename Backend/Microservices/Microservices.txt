@@ -1,0 +1,14 @@
+     GetCustomerRequest request = new GetCustomerRequest();
+    request.bosId = userAcctInfo.getBosID();
+    String url = getAbtUrl(agencyId)+"getcustomerDetails";
+    String action= AdminMytixConstant.USER_ADMIN+"getCustomerDetails";
+    String method= AdminMytixConstant.USER_ADMIN+"_getCustomerDetails";
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("agencyId", agencyId);
+    headers.set("apiKey", "1");
+    if (agencyDB.getOracle().contains(agencyId)) {
+          headers.set("apiKey", cache.getAppTypes().get(AdminMytixConstant.APP_TYPE_USER+"").getApi_key());
+    }
+    HttpEntity<Object> entity = new HttpEntity<>(request, headers);
+
+masAdminResponse = restUtil.doRequest(url, entity, MasAdminResponse.class);

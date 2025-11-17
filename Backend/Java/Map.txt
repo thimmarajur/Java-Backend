@@ -1,0 +1,189 @@
+1. HashMap vs WeakHashMap
+	HashMap and WeakHashMap are both implementations of the Map interface in Java, but they differ significantly in how they handle memory and object references. Below is a detailed comparison.
+	
+	a. HashMap
+		Behavior:
+
+			HashMap stores key-value pairs and uses strong references for both keys and values.
+
+			As long as the HashMap itself is reachable, all its keys and values remain in memory, even if they are no longer used elsewhere in the application.
+
+		Memory Management:
+
+			Keys and values are not eligible for garbage collection as long as they are part of the HashMap.
+
+			This can lead to memory leaks if keys or values are no longer needed but still referenced by the HashMap.
+
+		Use Case:
+
+			Suitable for general-purpose maps where you want to retain all entries until explicitly removed.
+			
+			
+			
+	b. WeakHashMap
+		Behavior:
+
+			WeakHashMap uses weak references for its keys. This means that if a key is no longer referenced outside the WeakHashMap, it becomes eligible for garbage collection.
+
+			When the key is garbage collected, the corresponding entry is automatically removed from the WeakHashMap.
+
+		Memory Management:
+
+			Helps prevent memory leaks by allowing unused keys to be garbage collected.
+
+			Values are only removed when their corresponding keys are garbage collected.
+
+		Use Case:
+
+			Ideal for caches or temporary storage where entries should be automatically removed when they are no longer in use.
+			
+			
+			
+2. In Java, the Map interface is part of the Java Collections Framework and is used to store key-value pairs. Each key in a Map must be unique, and it allows you to retrieve the corresponding value using the key. Here's an overview and examples of how to use Map in Java:
+
+	Key Points about Map:
+		Key-Value Pairs: A Map stores data in the form of key-value pairs.
+
+		No Duplicate Keys: Each key in a Map must be unique. If you try to add a duplicate key, the existing value will be overwritten.
+
+	Common Implementations:
+
+		HashMap: Stores key-value pairs in a hash table (no order guaranteed).
+
+		TreeMap: Stores key-value pairs in a sorted order (based on natural ordering or a custom comparator).
+
+		LinkedHashMap: Maintains insertion order of keys.
+		
+	When to Use Which Implementation?
+		HashMap: Use when you need fast access and don't care about order.
+
+		TreeMap: Use when you need keys to be sorted.
+
+		LinkedHashMap: Use when you need to maintain insertion order of keys.
+
+	Common Methods in Map:
+		put(K key, V value): Adds a key-value pair to the map.
+
+		get(K key): Retrieves the value associated with the key.
+
+		remove(K key): Removes the key-value pair for the given key.
+
+		containsKey(K key): Checks if the map contains a specific key.
+
+		keySet(): Returns a set of all keys in the map.
+
+		values(): Returns a collection of all values in the map.
+
+		entrySet(): Returns a set of all key-value pairs (as Map.Entry objects).
+		
+		
+		
+3. 	Internal Working of Hashmap
+
+	HashMap is one of the most commonly used data structures in Java, providing fast key-value storage and retrieval. Here's a detailed look at how it works internally:
+
+	## Basic Structure
+
+	1. **Array of Nodes**: HashMap internally uses an array (called table or bucket array) of `Node<K,V>` objects
+	2. **Node Class**: Each node contains:
+	   - Hash code of the key
+	   - Key object
+	   - Value object
+	   - Pointer to next node (for handling collisions)
+
+	## Key Operations
+
+	### 1. put() Operation
+
+	When you insert a key-value pair using `map.put(key, value)`:
+
+	1. **Hash Calculation**: The hash code of the key is computed using `key.hashCode()`
+	2. **Index Calculation**: This hash is then processed through an additional hash function to reduce collisions and determine the bucket index:
+	   ```java
+	   index = (n - 1) & hash  // where n is the array size (power of two)
+	   ```
+	3. **Bucket Handling**:
+	   - If bucket is empty, create a new node and place it there
+	   - If bucket has existing nodes:
+		 - Check if first node's key matches (using `equals()`)
+		 - If matches, update value
+		 - If not, traverse the linked list/red-black tree to check other nodes
+		 - If no match found, add new node at end of list/tree
+	4. **Resizing**: If size exceeds load factor (default 0.75), the array is resized (doubled) and all entries are rehashed
+
+	### 2. get() Operation
+
+	When you retrieve a value using `map.get(key)`:
+
+	1. **Hash Calculation**: Compute hash code of the key
+	2. **Index Calculation**: Determine bucket index using same formula as put()
+	3. **Node Search**:
+	   - If bucket has single node, check its key
+	   - If bucket has multiple nodes (linked list or tree), traverse to find matching key
+	4. **Return Value**: Return value of matching node or null if not found
+
+	## Handling Collisions
+
+	HashMap handles hash collisions using:
+
+	1. **Separate Chaining**: Each bucket is a linked list (Java 7 and earlier)
+	2. **Balanced Trees**: In Java 8+, when a bucket reaches a threshold (TREEIFY_THRESHOLD = 8), the linked list converts to a red-black tree to maintain O(log n) performance for worst-case scenarios
+
+	## Important Parameters
+
+	1. **Initial Capacity**: Default is 16 (can be specified in constructor)
+	2. **Load Factor**: Default is 0.75 (when 75% full, resize occurs)
+	3. **Threshold**: Capacity * Load Factor (when size exceeds this, resize happens)
+
+	## Java 8+ Improvements
+
+	- Treeification of buckets with many collisions (improves worst-case performance)
+	- Better hash distribution algorithm
+	- Lazy initialization of the hash table
+
+	## Example Flow
+
+	```java
+	HashMap<String, Integer> map = new HashMap<>();
+	map.put("key1", 1);
+
+	// Internally:
+	// 1. "key1".hashCode() → say 12345
+	// 2. index = (16 - 1) & (12345 ^ (12345 >>> 16)) → say index 5
+	// 3. Create Node(hash=12345, key="key1", value=1, next=null) at index 5
+
+
+
+4.	Explain difference between HashMap, HashTable, and ConcurrentHashMap.
+
+	HashMap, HashTable, and ConcurrentHashMap are all classes in Java used for storing key-value pairs, but they differ significantly in synchronization, thread safety, and performance characteristics. 
+
+	### HashMap
+	- HashMap is not synchronized, meaning it is not thread-safe and should not be used in a concurrent or multi-threaded environment without manual synchronization.[3][5]
+	- Allows one null key and multiple null values, making it flexible but potentially risky in some use cases.[5][3]
+	- Offers high performance due to its lack of synchronization overhead.[5]
+	- Iterator is fail-fast, meaning it throws ConcurrentModificationException if the map is structurally modified during iteration (except by Iterator's own remove method).[3][5]
+
+	### HashTable
+	- HashTable is synchronized, making it thread-safe for use in multi-threaded environments.[6][3]
+	- Synchronization is coarse-grained: every method is synchronized, so only one thread can access the table at a time. This can result in significant performance bottlenecks as the table size or number of threads grows.[7][3]
+	- Does not allow null keys or null values.[3]
+	- Iterator is not fail-fast; it uses Enumerator and may throw exceptions if modified concurrently, but this is not guaranteed.[3]
+
+	### ConcurrentHashMap
+	- ConcurrentHashMap is designed specifically for concurrency, introduced in Java 1.5.[2][7]
+	- Uses a segmented locking mechanism: only a portion ("bucket" or "segment") of the map is locked during updates, allowing concurrent reads and many concurrent writes, improving scalability compared to HashTable.[4][1][7]
+	- Does not allow null keys or null values.[1][5]
+	- Iterator is fail-safe, meaning it will not throw ConcurrentModificationException if modified while iterating.[5]
+	- Provides much better performance in a multi-threaded application than HashTable due to fine-grained locks.[6][7]
+
+	### Comparison Table
+
+	| Feature                    | HashMap                         | HashTable                        | ConcurrentHashMap               |
+	|----------------------------|---------------------------------|----------------------------------|---------------------------------|
+	| Synchronization            | Not synchronized[3][5]  | Synchronized (global)[3][6] | Synchronized (segment-level)[1][7] |
+	| Thread Safety              | No                              | Yes                              | Yes                            |
+	| Null Keys/Values           | Allowed[3][5]           | Not allowed[3]               | Not allowed[1][5]      |
+	| Iterator Behavior          | Fail-fast[3][5]         | Not fail-fast[3]             | Fail-safe[5]               |
+	| Performance                | High[5]                     | Low (due to locking)[7]      | High (in concurrency)[7][6] |
+	| Typical Use Case           | Single-threaded[6]          | Legacy, thread-safe, simple[6] | Multi-threaded environments[6] |

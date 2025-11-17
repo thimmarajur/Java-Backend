@@ -1,0 +1,45 @@
+1. File handling (I/O) 
+		Class						Description
+		File						Represents file/directory.
+		FileReader					Reads character files.
+		FileWriter					Writes character files.
+		BufferedReader				Reads text efficiently.
+		BufferedWriter				Writes text efficiently.
+		FileInputStream				Reads binary files.
+		FileOutputStream			Writes binary files.
+		PrintWriter					Writes formatted text.
+
+
+		a. Creating a File (File Class)
+		
+		The File class is used to create, delete, and check file properties.
+			File file = new File("example.txt");
+            if (file.createNewFile()) {
+                System.out.println("File created: " + file.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+			
+		b. Writing to a File
+			BufferedWriter writer = new BufferedWriter(new FileWriter("example.txt"))
+			writer.write("Buffered Writer Example");
+            writer.newLine();
+            writer.write("Writing efficiently!");
+			
+		c.  Reading from a File
+			BufferedReader reader = new BufferedReader(new FileReader("example.txt"))
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+			
+		d.  Reading/Writing Binary Files
+			FileOutputStream fos = new FileOutputStream("binary.dat")
+            fos.write(new byte[]{65, 66, 67}); // Writes ABC
+            System.out.println("Binary data written.");
+			
+		e.  Reading a Binary File
+			FileInputStream fis = new FileInputStream("binary.dat")
+            int data;
+            while ((data = fis.read()) != -1) {
+                System.out.print((char) data);

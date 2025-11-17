@@ -1,0 +1,43 @@
+Absolutely! Let's **leave no stone unturned** for **`filter()`** like we did for `max()`! 🚀🔥  
+
+---
+
+## **🚀 Complete `filter()` Scenarios – No Stone Left Unturned!**
+
+### **🟢 Basic Use Cases**
+1. **Filter even numbers from a list** ✅ *(Common case)*
+2. **Filter odd numbers** ✅ *(Same as above, but `x % 2 != 0`)*
+3. **Filter words that contain a specific letter** ✅ *(e.g., words with "a")*
+4. **Filter out null values from a list** ✅ *(Avoid NullPointerException!)*
+5. **Filter numbers greater than a threshold** ✅ *(Basic range filtering)*
+6. **Filter employees with a salary greater than 50K** ✅ *(Common real-world example)*
+7. **Filter students with marks above 80** ✅ *(Same logic as salary)*
+8. **Filter people whose name starts with ‘A’** ✅ *(Useful for name searches)*
+9. **Filter strings with more than 5 characters** ✅ *(Useful for processing text)*
+10. **Filter products that are in stock (quantity > 0)** ✅ *(E-commerce scenario)*
+11. **Filter out negative numbers from a list** ✅ *(Common data cleaning step)*
+12. **Filter words that start and end with the same letter** ✅ *(Palindrome-like filtering)*
+13. **Filter the top 5 highest paid employees** ✅ *(Combining `sorted()` and `limit()`)*
+14. **Filter numbers that are prime** ✅ *(A tricky one!)*
+    ```java
+    List<Integer> primes = numbers.stream()
+        .filter(FilterExamples::isPrime)
+        .toList();
+
+    static boolean isPrime(int num) {
+        if (num < 2) return false;
+        return IntStream.rangeClosed(2, (int) Math.sqrt(num))
+                       .noneMatch(i -> num % i == 0);
+    }
+    ```
+15. **Filter people aged between 25 and 40** ✅ *(Combining two conditions)*
+16. **Filter employees in a specific department (`IT`)** ✅ *(Useful for HR systems)*
+17. **Filter students who failed (marks < 40) and sort by marks** ✅ *(Combining sorting & filtering)*
+18. **Filter palindromic words from a list** ✅ *(Cool string problem!)*
+    ```java
+    List<String> palindromes = words.stream()
+        .filter(w -> w.equals(new StringBuilder(w).reverse().toString()))
+        .toList();
+    ```
+19. **Filter people whose email domain is `gmail.com`** ✅ *(Useful for categorization)*
+20. **Filter transactions greater than 1000 in last 30 days** ✅ *(Common banking scenario)*

@@ -1,0 +1,9 @@
+1. server.port
+2. app.profile
+3. server.servlet.contextPath
+4. spring.profiles.active
+5. logging.file.path
+6. logging.level.root=INFO
+7. spring.security.user.name= user
+8. spring.security.user.password= password
+9. spring.security.user.roles= ACTUATOR

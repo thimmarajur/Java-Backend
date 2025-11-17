@@ -1,0 +1,46 @@
+Find the maximum number in a list of integers.
+Find the longest string in a list of words.
+Find the employee with the highest salary from a list of employees.
+Find the student with the highest marks from a list of students.
+Find the maximum occurring character in a string.
+Find the most frequent word in a sentence.
+Find the highest-priced product from a list of products.
+Find the longest word in a sentence.
+Find the department with the highest total salary from a list of employees.
+
+Find the longest increasing subsequence in a list of numbers.
+Find the most expensive item sold from a list of transactions.
+Find the year with the highest sales from a list of sales records.
+Find the second highest number in a list using sorted() and limit().
+Find the most frequently occurring word in a sentence using groupingBy() and max().
+
+Find the longest consecutive sequence in a list using max().
+Find the transaction with the highest amount from a list of transactions using max().
+Find the top 3 highest-paid employees using sorted() and limit().
+Find the customer who spent the most in total from a list of orders using max().
+Find the product category with the highest revenue using groupingBy() and max().
+Find the student with the highest average marks from a list using max().
+Find the product with the maximum price-to-weight ratio using max().
+Find the longest path in a graph using Java 8 streams and max().
+Find the best-performing stock in a given year using max().
+Find the maximum sum of digits in a list    List.of(123, 456, 789)
+Find the longest palindrome in a list
+
+
+
+Scenario						Best Approach
+Find max number					max(Integer::compareTo)
+Find longest string				max(Comparator.comparingInt(String::length))
+Find max object property		max(Comparator.comparingDouble(Class::method))
+Find most frequent element		groupingBy() + max(Map.Entry.comparingByValue())
+Find second highest				sorted().skip(1).findFirst()
+Find max in matrix				flatMapToInt(Arrays::stream).max()
+
+
+
+🔎 Key Points to Remember
+✅ max() returns an Optional<T>, so use .orElse() or .orElseThrow().
+✅ Use Comparator.comparing(Function) when working with objects.
+✅ Use mapToInt() for primitive types (int, double, long).
+✅ Use .sorted().skip(1) for second max values.
+✅ Use .groupingBy() + max() for frequency-based problems.

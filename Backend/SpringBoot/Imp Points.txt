@@ -1,0 +1,108 @@
+1. Logger Declaration
+	private static final Logger logger = LoggerFactory.getLogger(UserAccountDAO.class);
+	logger.info("UserAccountInfo size: {}", userAcctInfoList.size());
+	
+2. Springboot Starter Dependencies
+	Spring Boot starter dependencies simplify the process of setting up a Spring Boot application by providing a set of commonly used dependencies and auto-configurations. These starter dependencies include pre-configured libraries and configurations that allow developers to get up and running quickly with common features like web development, data access, and security.
+	
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-cache</artifactId>
+	</dependency>
+
+
+	a. spring-boot-starter-web -> For building web, RESTful, and web applications.
+		Includes: Spring MVC, Tomcat as the default embedded container, Jackson for JSON binding, and other web-related dependencies.
+	b. spring-boot-starter-jdbc -> Purpose: Provides support for JDBC operations and simplifies database interactions using the JdbcTemplate class.
+		Includes spring-jdbc, which provides the core JDBC support and JdbcTemplate.
+	c. spring-boot-starter-security -> Purpose: Provides a wide range of security features, including authentication and authorization, protection against common vulnerabilities, and more.
+		Includes spring-security-core, spring-security-config, and other Spring Security modules.
+	d. spring-boot-starter-parent -> Provides dependency management for Spring Boot and its related libraries.
+		Specifies default versions for commonly used Spring Boot dependencies, so you don't have to specify the versions explicitly.
+	e. spring-boot-starter-logging -> provides logging capabilities for Spring Boot applications. By default, it includes several essential logging libraries.
+	f. spring-boot-starter-cache -> Caching can significantly improve the performance of your application by storing frequently accessed data in memory, reducing the need for repeated computation or database queries.
+	
+	
+	
+	
+3. `@Component` and `@Bean`	
+	
+In Spring Framework, both `@Component` and `@Bean` are used to define beans in the Spring application context, but they are used in **different ways** and **serve different purposes**.
+
+	---
+
+	### 🔹 `@Component`
+
+	* **Used to mark a class** as a Spring-managed component (bean).
+	* Spring automatically detects it during **component scanning**.
+
+	#### Example:
+
+	```java
+	@Component
+	public class MyService {
+		public void doSomething() {
+			System.out.println("Doing something...");
+		}
+	}
+	```
+
+	#### Usage:
+
+	* Works with `@ComponentScan` to discover beans automatically.
+	* Can also use specializations: `@Service`, `@Repository`, `@Controller`.
+
+	#### When to use:
+
+	* For application classes where **you control the source code**.
+	* Simple and declarative — just annotate and go.
+
+	---
+
+	### 🔹 `@Bean`
+
+	* **Used to define a bean method** inside a `@Configuration` class.
+	* Spring calls the method and registers the returned object as a bean.
+
+	#### Example:
+
+	```java
+	@Configuration
+	public class AppConfig {
+
+		@Bean
+		public MyService myService() {
+			return new MyService();
+		}
+	}
+	```
+
+	#### Usage:
+
+	* Good for **third-party classes** or when you need **custom initialization logic**.
+	* Full control over how the bean is created.
+
+	#### When to use:
+
+	* When you **cannot annotate** the class (e.g., from a library).
+	* When you need to **customize dependencies manually** during bean creation.
+
+	---
+
+	### 🔸 Summary Table
+
+	| Feature     | `@Component`         | `@Bean`                                  |
+	| ----------- | -------------------- | ---------------------------------------- |
+	| Target      | Class                | Method inside `@Configuration`           |
+	| Detection   | Via `@ComponentScan` | Explicit via method return               |
+	| Use case    | For your own classes | For third-party or complex bean creation |
+	| Flexibility | Less control         | Full control over bean creation          |
+
+	---
+
+	### ✅ Rule of Thumb:
+
+	* Use `@Component` for **simple, self-managed beans**.
+	* Use `@Bean` when **manual creation or configuration** is needed.
+
+	Let me know if you want to see how both can be combined or used together in a project.

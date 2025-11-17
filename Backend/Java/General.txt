@@ -1,0 +1,1347 @@
+1. CLASS LOADER
+
+		In Java, a ClassLoader is a part of the Java Runtime Environment (JRE) that dynamically loads Java classes into the Java Virtual Machine (JVM). Classes are typically loaded on demand, meaning they are loaded into memory only when they are required by the application. The ClassLoader is responsible for locating and loading the bytecode of classes.
+
+Types of ClassLoaders in Java
+	Bootstrap ClassLoader:
+
+		Loads core Java classes (e.g., classes in java.lang, java.util, etc.).
+
+		Written in native code (not Java).
+
+		Part of the JVM.
+
+	Extension ClassLoader:
+
+		Loads classes from the Java extension directories (e.g., jre/lib/ext).
+
+		Child of the Bootstrap ClassLoader.
+
+	System/Application ClassLoader:
+
+		Loads classes from the application's classpath.
+
+		Child of the Extension ClassLoader.
+
+	Custom ClassLoader:
+
+		Developers can create their own ClassLoader by extending the ClassLoader class.
+
+		Useful for loading classes from non-standard sources (e.g., network, encrypted files, etc.).
+
+How ClassLoaders Work
+	ClassLoaders use the Delegation Model to load classes:
+
+	When a class is requested, the JVM asks the current ClassLoader to load it.
+
+	The ClassLoader delegates the request to its parent ClassLoader.
+
+	This process continues up to the Bootstrap ClassLoader.
+
+	If the parent ClassLoader cannot find the class, the child ClassLoader attempts to load it.
+
+	This ensures that core Java classes are loaded by the Bootstrap ClassLoader, preventing malicious code from replacing them.
+
+Important Notes
+	ClassLoaders are hierarchical and follow the parent-delegation model.
+
+	Each class in the JVM is loaded by exactly one ClassLoader.
+
+	Classes loaded by different ClassLoaders are isolated from each other, even if they have the same name.
+	
+	
+
+2. Garbage Collection in Java.
+
+	Garbage collection (GC) in Java is an automatic memory management process that reclaims memory occupied by objects that are no longer reachable or needed by a program. This helps in preventing memory leaks and optimizing application performance.
+	
+	How Garbage Collection Works
+		Object Creation: When an object is created using new, it is stored in the heap memory.
+		Object Usage: The program uses the object as long as there are references to it.
+		Garbage Identification: If no references point to an object, it becomes eligible for garbage collection.
+		Garbage Collector (GC) Execution: The JVM runs the garbage collector, freeing up memory by removing unreachable objects.
+		
+	Making Objects Eligible for GC
+		1. Nullifying References
+		2. Reassigning References
+		3. Objects Inside a Method
+		4. Island of Isolation ( Two objects referencing each other but not referenced by other objects. )
+
+
+3. References
+	Java provides different types of references in the java.lang.ref package to manage memory more efficiently and control garbage collection behavior. These references help in optimizing memory usage by allowing objects to be garbage collected under different conditions.
+	
+	a. Strong Reference (Default in Java)
+		A normal reference in Java.
+		Prevents garbage collection as long as it is reachable.
+		The object will not be garbage collected unless sb is explicitly set to null.
+
+	b. WeakReference
+		Allows the object to be garbage collected when no strong references exist.
+		Used for caching and scenarios where objects can be recreated if needed.
+
+	c. SoftReference
+		Similar to WeakReference, but the object is only collected when the JVM is running low on memory.
+		Useful for implementing memory-sensitive caches.
+
+	d. PhantomReference
+		Unlike WeakReference and SoftReference, get() always returns null.
+		Used to perform cleanup actions before an object is removed from memory.
+		Requires a ReferenceQueue to notify when the object is about to be garbage collected.
+		Use PhantomReference for cleaning up resources before garbage collection.
+		
+		
+
+4.  Array vs Collection in Java
+		In Java, both Arrays and Collections store and manipulate groups of objects, but they have different characteristics and use cases. Here’s a detailed comparison:
+		
+		1. Definition
+			Array: A fixed-size data structure that stores homogeneous elements (same data type).
+			Collection: A flexible framework (java.util.Collection) that can store heterogeneous objects and dynamically grow or shrink.
+			
+		2. Size & Resizability
+			Array: Fixed size; cannot grow or shrink after declaration.
+			Collection: Dynamic; can grow and shrink as elements are added or removed.
+			
+		3. Performance
+			Array:
+				Faster for indexed access (O(1) complexity).
+				More memory efficient (no extra overhead).
+			Collection:
+				Slightly slower than arrays due to internal management and resizing.
+				More flexible but may have additional overhead (e.g., dynamic resizing in ArrayList).
+
+		4. Memory Usage
+			Array:
+				Uses contiguous memory, making it efficient.
+			Collection:
+				Uses more memory due to additional features (e.g., dynamic resizing, metadata storage).
+				
+		5. Type Safety
+			Array:
+				Type-safe, meaning it can only store elements of the declared type.
+			Collection:
+				Supports Generics, allowing type safety at compile time.
+				
+		6. Built-in Methods
+			Array:
+				Limited built-in methods (length, Arrays.sort() etc.).
+			Collection:
+				Rich API (add(), remove(), contains(), size(), sort() etc.).
+				
+		7. Multi-threading Support
+			Array:
+				Not synchronized by default.
+			Collection:
+				ArrayList is not synchronized, but thread-safe alternatives like Vector and CopyOnWriteArrayList exist.
+
+
+		Conclusion
+			Use Arrays when size is fixed and performance is a priority.
+			Use Collections when dynamic resizing, flexibility, and rich API are required.
+			Collections provide better ease of use, but Arrays are more memory-efficient.
+			
+			
+
+
+
+5. How a HashMap Works Internally
+
+	A HashMap is a data structure that stores key-value pairs and allows for efficient retrieval, insertion, and deletion of elements. It is widely used in programming due to its average O(1) time complexity for these operations. Internally, a HashMap uses a combination of an array (often called a "bucket array") and a hashing mechanism to achieve this efficiency.
+
+	Hashing:
+
+		When you insert a key-value pair into a HashMap, the key is passed through a hash function.
+
+		The hash function converts the key into an integer (the hash code), which is used to determine the index in the underlying array where the value should be stored.
+
+		The goal of the hash function is to distribute keys uniformly across the array to minimize collisions.
+
+	Bucket Array:
+
+		The HashMap uses an array (often called a "bucket array") to store the key-value pairs.
+
+		Each index in the array is called a "bucket," and it can store one or more key-value pairs.
+
+	Handling Collisions:
+
+		A collision occurs when two different keys produce the same hash code and are mapped to the same index in the array.
+
+		HashMaps handle collisions using one of the following methods:
+
+	Separate Chaining: Each bucket contains a linked list or another data structure (e.g., a tree) to store multiple key-value pairs at the same index.
+
+	Open Addressing: If a collision occurs, the HashMap probes for the next available slot in the array (e.g., linear probing, quadratic probing).
+
+	Storing Key-Value Pairs:
+
+		Each key-value pair is stored as an entry in the bucket array.
+
+		In Java, for example, the entry is represented as a Node object (for linked lists) or TreeNode (for balanced trees in case of high collisions).
+
+	Retrieving Values:
+
+		To retrieve a value, the HashMap computes the hash code of the key, determines the index in the array, and then searches the bucket (e.g., linked list or tree) at that index for the matching key.
+
+	Resizing:
+
+		As more elements are added to the HashMap, the likelihood of collisions increases, degrading performance.
+
+		To maintain efficiency, the HashMap dynamically resizes itself by creating a new, larger array and rehashing all existing keys into the new array.
+
+		This process is called rehashing and typically doubles the size of the array.
+		
+		
+		
+5. 	Serialization, deserialization
+
+	Serialization and deserialization in Java are processes used to convert objects into a byte stream and vice versa. This is particularly useful for saving the state of an object to a file, sending it over a network, or storing it in a database.
+
+	Serialization
+		Serialization is the process of converting an object into a byte stream. This byte stream can then be saved to a file, sent over a network, or stored in a database.
+
+		To make a Java object serializable, the class must implement the java.io.Serializable interface. This interface is a marker interface, meaning it does not have any methods.
+		
+		Use ObjectOutputStream along with FileOutputStream to write the object to a file.
+		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("person.ser"))
+	
+	Deserialization
+		Deserialization is the process of converting the byte stream back into an object. This allows you to recreate the object from the serialized data.
+		
+		Read the object from the byte stream using ObjectInputStream and FileInputStream.
+
+
+	Key Points:
+		Serializable Interface: The class whose objects need to be serialized must implement the Serializable interface.
+
+		Transient Keyword: If you want to exclude a field from being serialized, you can mark it as transient.
+
+		Versioning: Java uses a serialVersionUID to ensure that the same class is used during deserialization as was used during serialization. If the class changes, you should manually define this field to avoid InvalidClassException.
+
+		Security: Be cautious when deserializing objects from untrusted sources, as it can lead to security vulnerabilities.
+		
+		
+		
+6.  super, this, transient and volatile keywords
+	a. super Keyword
+		Purpose: The super keyword is used to refer to the immediate parent class object.
+
+		Usage:
+
+			To call the parent class constructor.
+
+			To access parent class methods or fields (when overridden or hidden in the child class).
+			
+	b. this Keyword
+		Purpose: The this keyword refers to the current instance of the class.
+
+		Usage:
+
+			To differentiate between instance variables and parameters (especially in constructors or setters).
+
+			To call one constructor from another in the same class (constructor chaining).
+			
+			
+	c. transient Keyword
+		Purpose: The transient keyword is used in serialization to indicate that a field should not be serialized.
+
+		Usage:
+
+			When you want to exclude sensitive or unnecessary data from being serialized (e.g., passwords, temporary fields).
+			
+			
+	d. volatile Keyword
+		Purpose: The volatile keyword is used to indicate that a variable's value may be modified by multiple threads. It ensures visibility of changes across threads.
+
+		Usage:
+
+			When a variable is shared among multiple threads, and you want to ensure that changes made by one thread are immediately visible to other threads.
+
+			Prevents thread caching of the variable's value.
+			
+			
+			
+7.  Memory Management & Garbage Collection in Java
+	Java handles memory management automatically using the JVM (Java Virtual Machine). It allocates and deallocates memory dynamically using Garbage Collection (GC) to remove unused objects.
+
+	a.Java Memory Areas (JVM Memory Model)
+	Java divides memory into different regions:
+
+		1. Stack (Method Stack)
+			Stores local variables and method call information.
+			Each thread has its own separate stack.
+			Memory is automatically deallocated when methods complete.
+			Example: Stack Memory Usage
+				void method() {
+					int x = 10; // Stored in stack
+				}
+			
+			Stack is fast, but limited in size.
+
+		2. Heap (Object Storage)
+			Stores objects and class instances.
+			Managed by Garbage Collector.			
+			Example: Heap Memory Usage
+				class Person {
+					String name;  // Stored in Heap
+				}				
+				Person p = new Person();  // New object in Heap
+				
+		3. Method Area (Metaspace)
+			Stores class metadata, static variables, and JIT-compiled code.
+			Replaced PermGen (JDK 8+).
+			Example: Static Variable in Method Area
+				class Test {
+					static int count = 0;  // Stored in Method Area
+				}
+				
+				
+	
+	b.Garbage Collection (GC) in Java
+		Garbage Collection automatically removes unused objects to free memory.
+
+		How GC Works?
+			Marks unused objects.
+			Sweeps them from memory.
+			Compacts remaining objects.
+
+
+
+
+
+8. How to Make a Java Class Immutable?
+	An immutable class is a class whose objects cannot be modified after creation. All fields of an immutable object are fixed (read-only) once initialized.
+
+	Steps to Create an Immutable Class in Java
+		Declare the class as final (to prevent subclassing).
+		Make all fields private and final (to ensure they are not modified after initialization).
+		Provide a constructor to initialize fields (only once at the time of object creation).
+		Do not provide setter methods (to prevent modification).
+		Return defensive copies of mutable fields (instead of direct references).
+
+
+
+9. == and .equals()
+	In Java, == and .equals() are used for comparison, but they serve different purposes and behave differently depending on the context. Here's a detailed explanation of the differences:
+
+	a. == Operator
+		Purpose: The == operator is used to compare the references of two objects or the values of primitive data types.
+
+		Behavior:
+
+		Primitive Types: When used with primitive types (e.g., int, char, boolean), == compares the actual values.
+
+		Object Types: When used with objects, == compares the memory addresses (references) of the objects, not their content. It checks if both references point to the same object in memory.
+		
+	b. .equals() Method
+		Purpose: The .equals() method is used to compare the content or logical equality of two objects.
+
+		Behavior:
+
+		The .equals() method is defined in the Object class and can be overridden by subclasses (e.g., String, Integer, custom classes) to provide meaningful comparisons.
+
+		By default, .equals() in the Object class behaves like ==, comparing references. However, most classes override it to compare the actual content of the objects.
+		
+	c. When to Use Which
+		Use ==:
+
+			To compare primitive values.
+
+			To check if two object references point to the same instance in memory.
+
+		Use .equals():
+
+			To compare the content or logical equality of objects (e.g., strings, custom objects).
+
+			Always use .equals() for strings to compare their actual content.
+			
+			
+	Summary
+		== compares references for objects and values for primitives.
+
+		.equals() compares content or logical equality for objects (if overridden).
+
+		Always use .equals() for comparing strings and other objects where content matters. Use == for reference comparison or primitive value comparison.
+		
+		
+		
+		
+10.How does Java ensure platform independence?		
+
+	a. Java Virtual Machine (JVM)
+		Role: The JVM is the cornerstone of Java's platform independence. It acts as an abstraction layer between the compiled Java code and the underlying hardware and operating system.
+
+		How It Works:
+
+			Java code is compiled into bytecode (a platform-independent intermediate representation) rather than native machine code.
+
+			The JVM interprets or compiles this bytecode into native machine code at runtime, tailored to the specific platform (e.g., Windows, Linux, macOS).
+
+			This allows the same bytecode to run on any platform with a compatible JVM.
+
+		Example:
+
+			A Java program compiled on Windows can run on Linux or macOS without modification, as long as a JVM is available for those platforms.
+
+	b. Bytecode
+		Platform-Independent Intermediate Representation: Java source code is compiled into bytecode (stored in .class files), which is not tied to any specific hardware or operating system.
+
+		Portability: Bytecode can be executed on any device or platform that has a JVM, making Java programs highly portable.
+
+	c. Write Once, Run Anywhere (WORA)
+		Philosophy: Java's design philosophy emphasizes writing code once and running it on any platform without modification.
+
+		Achieved Through:
+
+			Standardized bytecode format.
+
+		Availability of JVMs for almost all major platforms.
+
+	d. Standardized Libraries
+		Java Standard Library (Java API): Java provides a rich set of libraries (e.g., java.lang, java.util, java.io) that abstract platform-specific details.
+
+		Consistent Behavior: These libraries ensure that Java programs behave consistently across different platforms. For example, file I/O operations work the same way on Windows, Linux, and macOS.
+		
+		
+	Summary
+		Java ensures platform independence through:
+
+		The JVM, which abstracts platform-specific details.
+
+		Bytecode, a platform-independent intermediate representation.
+
+		Standardized libraries that provide consistent behavior across platforms.
+
+		A strict language specification that ensures uniformity.
+
+		Write Once, Run Anywhere (WORA) philosophy.
+
+		This combination of features allows Java programs to run seamlessly on any platform with a compatible JVM, making Java one of the most portable programming languages.
+
+
+
+11. What is the purpose of final, finally, and finalize?
+
+	In Java, final, finally, and finalize are three distinct concepts with different purposes. Here's a detailed explanation of each:
+
+	a. final
+		Purpose: The final keyword is used to restrict or define immutability in various contexts.
+
+		Usage:
+
+			Variables: A final variable cannot be reassigned after initialization.
+
+			Methods: A final method cannot be overridden by subclasses.
+
+			Classes: A final class cannot be subclassed (inherited).
+
+	b. finally
+		Purpose: The finally block is used in exception handling to ensure that a block of code is executed regardless of whether an exception is thrown or not.
+
+		Usage:
+
+			It is typically used with try-catch blocks to release resources (e.g., closing files, database connections) or perform cleanup operations.
+
+			The finally block is always executed, even if:
+
+			An exception is thrown.
+
+			A return statement is encountered in the try or catch block.
+			
+			
+	c. finalize
+		Purpose: The finalize method is used for cleanup operations before an object is garbage collected.
+
+		Usage:
+
+			It is defined in the Object class and can be overridden in custom classes.
+
+			The finalize method is called by the garbage collector when it determines that no more references to the object exist.
+
+			It is generally used to release non-Java resources (e.g., file handles, network connections) that the object might hold.
+			
+		Note: The finalize method is deprecated starting from Java 9 because it is unreliable and can lead to performance issues. Instead, use try-with-resources or other cleanup mechanisms.
+		
+		
+	Key Takeaways
+		Use final to enforce immutability or restrict inheritance/method overriding.
+
+		Use finally to ensure cleanup or resource release in exception handling.
+
+		Avoid using finalize (deprecated); prefer modern cleanup mechanisms like AutoCloseable and try-with-resources.
+		
+		
+		
+		
+12. What is the role of the final keyword in Java?
+	In Java, the final keyword is used to impose restrictions on variables, methods, and classes. Its role varies depending on the context in which it is used. Here's a detailed explanation of its purpose and usage:
+
+		a. Final Variables
+			Purpose: A final variable cannot be reassigned after it is initialized.
+
+			Usage:
+
+				Used to define constants (e.g., PI = 3.14).
+
+				Ensures that the value of the variable remains unchanged throughout its lifetime.
+
+			Behavior:
+
+				Must be initialized either at the time of declaration or in the constructor (for instance variables).
+
+				For primitive types, the value cannot be changed.
+
+				For reference types, the reference cannot be changed (but the object's state can be modified).
+				
+		b. Final Methods
+			Purpose: A final method cannot be overridden by subclasses.
+
+			Usage:
+
+				Used to prevent modification of a method's behavior in subclasses.
+
+				Ensures that the method's implementation remains consistent across the class hierarchy.
+
+			Behavior:
+
+				Subclasses cannot override a final method.
+
+				The method can still be inherited and used by subclasses.
+				
+				
+		c. Final Classes
+			Purpose: A final class cannot be subclassed (inherited).
+
+			Usage:
+
+				Used to prevent inheritance and ensure that the class's behavior cannot be modified or extended.
+
+				Commonly used for immutable classes (e.g., String, Integer).
+
+			Behavior:
+
+				No other class can extend a final class.
+				
+				
+		d. Final Parameters
+			Purpose: A final parameter cannot be modified within the method.
+
+			Usage:
+
+				Used to prevent reassignment of method parameters.
+
+				Ensures that the parameter's value remains unchanged within the method.
+				
+		e. Benefits of Using final
+			Immutability: Ensures that variables, methods, or classes cannot be modified, leading to safer and more predictable code.
+
+			Thread Safety: final variables are inherently thread-safe, as their values cannot be changed after initialization.
+
+			Design Clarity: Communicates the intent that certain elements of the code should not be altered or extended.
+			
+			
+13. Understanding Immutability in Java
+	Immutability in Java refers to the property of an object whose state cannot be modified after it is created. Immutable objects are inherently thread-safe, simplify concurrent programming, and are often used for values that should remain constant throughout their lifecycle.
+
+	a.Key Characteristics of Immutable Objects
+		State Cannot Be Modified After Creation:
+
+			Once an immutable object is created, its internal state (fields) cannot be changed.
+
+			Any attempt to modify the object results in the creation of a new object.
+
+		No Setter Methods:
+
+			Immutable classes do not provide setter methods or any other methods that modify the internal state.
+
+		Final Fields:
+
+			Fields in an immutable class are typically declared as final to ensure they are assigned only once (during object creation) and cannot be reassigned.
+
+		Deep Copy for Mutable Fields:
+
+			If an immutable class contains references to mutable objects, it must ensure that those references are not exposed directly. Instead, it should return deep copies of those objects to prevent external modification.
+
+		No Inheritance:
+
+			Immutable classes are often declared as final to prevent subclassing, which could introduce mutable behavior.
+
+	b.How to Create an Immutable Class in Java
+
+		Declare the Class as final:
+
+			Prevents the class from being subclassed.
+
+		Make All Fields final:
+
+			Ensures fields are assigned only once, during object creation.
+
+		Do Not Provide Setter Methods:
+
+			Avoid methods that modify the state of the object.
+
+		Initialize Fields via Constructor:
+
+			All fields should be initialized in the constructor.
+
+		Perform Defensive Copying for Mutable Fields:
+
+			If the class contains mutable fields, ensure that copies are returned instead of the original references.
+
+		Return Immutable or Defensive Copies from Getter Methods:
+
+			Prevent external code from modifying the internal state.
+			
+			
+			
+	c.Advantages of Immutability
+		Thread Safety:
+
+			Immutable objects can be shared across threads without synchronization, as their state cannot change.
+
+		Simplified Code:
+
+			Immutable objects eliminate the need for defensive copying and reduce the risk of bugs caused by unintended modifications.
+
+		Caching and Reusability:
+
+			Immutable objects can be safely cached and reused, as their state remains constant.
+
+		Predictable Behavior:
+
+			Since the state of an immutable object cannot change, its behavior is predictable and consistent.
+
+	d.Disadvantages of Immutability
+		Performance Overhead:
+
+			Creating new objects for every modification can be inefficient in terms of memory and processing.
+
+		Complexity with Mutable Dependencies:
+
+			Handling mutable fields within an immutable class requires careful design (e.g., defensive copying).
+
+	e.Common Immutable Classes in Java
+		String
+
+		Wrapper classes like Integer, Long, Double, etc.
+
+		LocalDate, LocalTime, and other classes from the java.time package.
+
+	f.Best Practices
+		Use Immutable Objects for Constants:
+
+			Immutable objects are ideal for representing constants or configuration values.
+
+		Prefer Immutable Collections:
+
+			Use libraries like Guava or Java's Collections.unmodifiableXXX() methods to create immutable collections.
+
+		Minimize Mutable State:
+
+			Design classes to be immutable whenever possible to reduce complexity and improve reliability.
+			
+			
+			
+14. Abstract Class vs. Interface – When to Use What?
+
+
+
+	In Java, both abstract classes and interfaces are used to achieve abstraction and define contracts for classes. However, they serve different purposes and have distinct characteristics. Choosing between them depends on the specific requirements of your design. Here's a detailed comparison and guidance on when to use each:
+
+	a.Abstract Class
+		An abstract class is a class that cannot be instantiated and is typically used as a base class for other classes. It can contain both abstract methods (methods without a body) and concrete methods (methods with a body).
+
+		Key Features:
+			Partial Implementation:
+
+				Can provide default implementations for some methods using concrete methods.
+
+				Subclasses can inherit and reuse this implementation.
+
+			Fields:
+
+				Can have instance variables (fields) with any access modifier (private, protected, public).
+
+			Constructors:
+
+				Can have constructors to initialize fields, even though the abstract class itself cannot be instantiated.
+
+			Inheritance:
+
+				A class can extend only one abstract class (single inheritance).
+
+			Access Modifiers:
+
+				Methods and fields can have any access modifier (public, protected, private).
+
+			Stateful:
+
+				Can maintain state using instance variables.
+
+	b.Interface
+	An interface is a contract that defines a set of methods that implementing classes must provide. Starting with Java 8, interfaces can also have default methods (methods with a body) and static methods.
+
+		Key Features:
+			Full Abstraction:
+
+				Traditionally, interfaces only declare method signatures (no implementation).
+
+				Java 8 introduced default and static methods, allowing some implementation.
+
+			No Fields:
+
+				Cannot have instance variables. Only public static final constants are allowed.
+
+			No Constructors:
+
+				Cannot have constructors.
+
+				Multiple Inheritance:
+
+				A class can implement multiple interfaces.
+
+			Access Modifiers:
+
+				All methods are public by default (cannot use private or protected).
+
+			Stateless:
+
+				Cannot maintain state (no instance variables).
+
+
+		When to Use an Abstract Class
+			Shared Code:
+
+				Use an abstract class when you want to provide a common base implementation for multiple subclasses.
+
+				Example: A Vehicle abstract class with common methods like start() and stop().
+
+			State Management:
+
+				Use an abstract class when you need to maintain state (instance variables) that subclasses will inherit.
+
+				Example: A BankAccount abstract class with fields like accountNumber and balance.
+
+			Controlled Inheritance:
+
+				Use an abstract class when you want to restrict inheritance to a specific hierarchy.
+
+				Example: A Shape abstract class with methods like calculateArea().
+
+			Constructor Logic:
+
+				Use an abstract class when you need to enforce constructor logic for subclasses.
+
+				Example: Initializing fields in the constructor.
+
+		When to Use an Interface
+			Multiple Inheritance:
+
+				Use an interface when a class needs to inherit behavior from multiple sources.
+
+				Example: A SmartDevice class implementing Callable, Playable, and Connectable interfaces.
+
+			Defining a Contract:
+
+				Use an interface to define a contract that multiple unrelated classes must follow.
+
+				Example: Comparable interface for objects that can be compared.
+
+			Loose Coupling:
+
+				Use an interface to decouple the definition of behavior from its implementation.
+
+				Example: A Logger interface with multiple implementations like FileLogger and ConsoleLogger.
+
+			Default Behavior:
+
+				Use an interface when you want to provide default behavior for methods (using default methods in Java 8+).
+
+				Example: A List interface with a default sort() method.
+
+			API Design:
+
+				Use an interface when designing APIs to allow flexibility for future implementations.
+
+				Example: Java's Collection framework interfaces like List, Set, and Map.
+				
+				
+	Key Takeaways
+		Use an abstract class when you need to share code, manage state, or enforce a specific class hierarchy.
+
+		Use an interface when you need to define a contract, support multiple inheritance, or design flexible APIs.
+
+		In modern Java (Java 8+), interfaces can provide default implementations, blurring the line between abstract classes and interfaces. However, the fundamental differences (state, constructors, etc.) still guide their usage.
+		
+		
+		
+15. Stack vs. Heap Memory – Key Differences
+	In Java, memory is divided into two main areas: the stack and the heap. Understanding the differences between stack and heap memory is crucial for writing efficient and bug-free programs. Here's a detailed explanation of the two:
+
+	a.Stack Memory
+		Purpose:
+
+			Used for storing local variables and function call frames.
+
+			Each thread has its own stack memory.
+
+		Lifetime:
+
+			Memory is allocated when a method is called and freed when the method exits.
+
+			Short-lived; variables are destroyed once the method completes.
+
+		Access Speed:
+
+			Faster access compared to heap memory because it uses a Last-In-First-Out (LIFO) structure.
+
+		Size:
+
+			Fixed size (determined at thread creation).
+
+			Smaller in size compared to heap memory.
+
+		Memory Management:
+
+			Automatically managed by the system (no manual allocation/deallocation).
+
+			Stack overflow occurs if the stack memory is exhausted (e.g., due to deep recursion).
+
+		Storage:
+
+			Stores primitive data types (e.g., int, char, boolean) and references to objects in the heap.
+
+			Does not store actual objects.
+
+	b.Heap Memory
+		Purpose:
+
+			Used for dynamic memory allocation (e.g., objects and arrays).
+
+			Shared across all threads.
+
+		Lifetime:
+
+			Memory is allocated when objects are created using the new keyword.
+
+			Long-lived; objects remain in memory until they are no longer referenced and are garbage collected.
+
+		Access Speed:
+
+			Slower access compared to stack memory due to dynamic allocation and garbage collection.
+
+		Size:
+
+			Flexible size (can grow or shrink as needed).
+
+			Larger in size compared to stack memory.
+
+		Memory Management:
+
+			Managed by the garbage collector (GC), which automatically reclaims unused memory.
+
+			Out-of-memory errors occur if the heap is exhausted.
+
+		Storage:
+
+			Stores actual objects and their instance variables.
+			
+	c. Method Area
+		Purpose:
+
+			Stores class-level data, such as class metadata, constant pool, field and method data, and the code for methods and constructors.
+
+			Shared/Non-Shared:
+
+			Shared among all threads.
+
+		Key Points:
+
+			Part of the heap memory in older JVM versions but moved to a separate area (Metaspace) in newer versions.
+
+			Contains runtime constant pool (e.g., string literals, numeric constants).		
+			
+	When to Use Stack vs. Heap
+		Stack:
+
+			Use for local variables and method calls.
+
+			Ideal for short-lived data.
+
+		Heap:
+
+			Use for objects and data that need to persist beyond the scope of a method.
+
+			Ideal for dynamic memory allocation.
+
+	Common Issues
+		Stack Overflow:
+
+			Occurs when the stack memory is exhausted (e.g., due to deep recursion).
+
+			Fix: Optimize recursive algorithms or increase stack size using -Xss JVM option.
+
+		Out of Memory (Heap):
+
+			Occurs when the heap memory is exhausted (e.g., due to excessive object creation).
+
+			Fix: Optimize memory usage or increase heap size using -Xmx JVM option.
+
+	Best Practices
+		Minimize Heap Usage:
+
+			Avoid creating unnecessary objects to reduce garbage collection overhead.
+
+			Use object pooling or caching for frequently used objects.
+
+		Optimize Stack Usage:
+
+			Avoid deep recursion and large local variables.
+
+		Monitor Memory Usage:
+
+			Use tools like VisualVM or JConsole to monitor stack and heap usage.
+			
+			
+16.	equals() , hashCode() and toString() methods in Object Class
+
+	In Java, the `Object` class is the root of the class hierarchy, and it provides several fundamental methods that are inherited by all other classes. Three of the most commonly overridden methods are:
+
+	### 1. **`equals(Object obj)`**
+	   - **Purpose**: Determines whether two objects are "equal" based on their content (rather than reference equality).
+	   - **Default Implementation**: The `Object` class provides a default implementation that checks for **reference equality** (i.e., `this == obj`).
+	   - **When to Override**: Override when you want to compare objects based on their internal state (fields) rather than memory addresses.
+	   - **Contract**:
+		 - **Reflexive**: `x.equals(x)` should be `true`.
+		 - **Symmetric**: If `x.equals(y)` is `true`, then `y.equals(x)` should also be `true`.
+		 - **Transitive**: If `x.equals(y)` and `y.equals(z)` are `true`, then `x.equals(z)` should also be `true`.
+		 - **Consistent**: Multiple calls to `x.equals(y)` should consistently return the same result.
+		 - **Non-null**: `x.equals(null)` should return `false`.
+
+	   **Example**:
+	   ```java
+	   @Override
+	   public boolean equals(Object obj) {
+		   if (this == obj) return true;
+		   if (obj == null || getClass() != obj.getClass()) return false;
+		   Person person = (Person) obj;
+		   return age == person.age && Objects.equals(name, person.name);
+	   }
+	   ```
+
+	---
+
+	### 2. **`hashCode()`**
+	   - **Purpose**: Returns an integer hash code value for an object, used in hash-based collections like `HashMap`, `HashSet`.
+	   - **Default Implementation**: The `Object` class provides a native implementation that typically converts the memory address of the object into an integer.
+	   - **When to Override**: Must be overridden whenever `equals()` is overridden to maintain the **hashCode contract**.
+	   - **Contract**:
+		 - If two objects are equal (`x.equals(y)` is `true`), then their `hashCode()` must return the same value.
+		 - However, two objects with the same `hashCode()` do not necessarily have to be equal.
+
+	   **Example**:
+	   ```java
+	   @Override
+	   public int hashCode() {
+		   return Objects.hash(name, age);
+	   }
+	   ```
+
+	   > **Best Practice**: Use `Objects.hash(field1, field2, ...)` for a simple and correct implementation.
+
+	---
+
+	### 3. **`toString()`**
+	   - **Purpose**: Returns a string representation of the object, useful for debugging and logging.
+	   - **Default Implementation**: The `Object` class provides a default implementation that returns `ClassName@hashCode` (e.g., `Person@1a2b3c`).
+	   - **When to Override**: Override to provide meaningful information about the object's state.
+
+	   **Example**:
+	   ```java
+	   @Override
+	   public String toString() {
+		   return "Person{name='" + name + "', age=" + age + "}";
+	   }
+	   ```
+
+	   > **Best Practice**: Modern IDEs (like IntelliJ, Eclipse) can auto-generate `toString()` based on fields.
+
+	---
+
+	### **Key Relationship Between `equals()` and `hashCode()`**
+	- If two objects are `equal`, they **must** have the same `hashCode`.
+	- If two objects have the same `hashCode`, they **do not** necessarily have to be equal.
+	- Violating this contract can lead to bugs in hash-based collections.
+
+
+
+17. Singleton Class
+
+	A Singleton class is a design pattern that restricts the instantiation of a class to a single instance and provides a global point of access to that instance. This is useful when exactly one object is needed to coordinate actions across the system.
+
+	## Key Characteristics of Singleton:
+	- Only one instance of the class exists
+	- Provides a global access point to that instance
+	- The instance is created only when it's needed for the first time (lazy initialization)
+
+	## Thread-Safe Singleton Implementation in Java
+
+	Here's how to implement a thread-safe Singleton class in Java:
+
+
+	### 1. Using Double-Checked Locking (More efficient)
+	```java
+	public class Singleton {
+		private static volatile Singleton instance;
+		
+		private Singleton() {
+			// private constructor
+		}
+		
+		public static Singleton getInstance() {
+			if (instance == null) {
+				synchronized (Singleton.class) {
+					if (instance == null) {
+						instance = new Singleton();
+					}
+				}
+			}
+			return instance;
+		}
+	}
+	```
+
+
+
+	## Explanation of Thread Safety:
+
+	1. **Double-Checked Locking**: 
+	   - First checks without synchronization
+	   - Then synchronizes only if instance is null
+	   - Uses `volatile` keyword to prevent memory visibility issues
+	   - More efficient than synchronized method
+
+
+	## Usage Example:
+	```java
+	Singleton singleton = Singleton.getInstance();
+	```
+	
+	
+18.	### **Immutable Class in Java**
+	An **immutable class** is a class whose instances (objects) cannot be modified after creation. Once an object is created, its state (data) remains constant throughout its lifetime.
+
+	#### **Characteristics of an Immutable Class:**
+	1. **No setter methods** – Fields are set only via constructors.
+	2. **All fields are `final` and `private`** – Prevents modification after initialization.
+	3. **No direct access to mutable fields** – If the class holds references to mutable objects, return defensive copies instead of the actual references.
+	4. **Class is declared `final`** – Prevents subclassing and overriding methods that could modify state.
+
+	---
+
+	### **Example of Immutable Class in Java**
+	```java
+	public final class ImmutableStudent {
+		private final String name;
+		private final int age;
+
+		public ImmutableStudent(String name, int age) {
+			this.name = name;
+			this.age = age;
+		}
+
+		public String getName() { return name; }  // No setter
+		public int getAge() { return age; }       // No setter
+	}
+	```
+
+	### **Conclusion**
+	- **Immutable classes** provide **safety, thread-safety, and efficiency**.
+	- **`String` is immutable** to ensure **security, thread-safety, and optimization** (String Pool, hash caching).
+
+
+
+	19.	In Java, both `Comparable` and `Comparator` are interfaces used to sort objects, but they serve different purposes and are used in different scenarios. Here’s a detailed comparison:
+
+	---
+
+	### **1. Comparable**
+	- **Purpose**: Defines the **natural ordering** of objects (default sorting logic).
+	- **Interface**: `java.lang.Comparable` (part of the core Java library).
+	- **Method**: `compareTo(T obj)` (only one method).
+	- **Usage**: The class itself implements `Comparable` to define how its instances should be ordered.
+	- **Modification**: Requires modifying the original class.
+	- **Example**:
+	  ```java
+	  class Student implements Comparable<Student> {
+		  String name;
+		  int age;
+
+		  @Override
+		  public int compareTo(Student other) {
+			  return this.age - other.age; // Sorts by age (ascending)
+		  }
+	  }
+	  ```
+	- **When to use**: When you have control over the class and want a default sorting order.
+
+	---
+
+	### **2. Comparator**
+	- **Purpose**: Defines **custom ordering** (alternative to natural ordering).
+	- **Interface**: `java.util.Comparator` (part of the `java.util` package).
+	- **Method**: `compare(T obj1, T obj2)`.
+	- **Usage**: A separate class or lambda is used to define comparison logic without modifying the original class.
+	- **Modification**: No need to modify the original class.
+	- **Example**:
+	  ```java
+	  // Comparator as a separate class
+	  class NameComparator implements Comparator<Student> {
+		  @Override
+		  public int compare(Student s1, Student s2) {
+			  return s1.name.compareTo(s2.name); // Sorts by name (alphabetical)
+		  }
+	  }
+
+	  // Using Comparator with Collections.sort()
+	  List<Student> students = new ArrayList<>();
+	  Collections.sort(students, new NameComparator());
+
+	  // Using Lambda (Java 8+)
+	  Collections.sort(students, (s1, s2) -> s1.name.compareTo(s2.name));
+	  ```
+	- **When to use**: When you need multiple sorting criteria or cannot modify the original class.
+
+	---
+
+	### **Key Differences**
+	| Feature          | Comparable                          | Comparator                          |
+	|------------------|-------------------------------------|-------------------------------------|
+	| **Package**      | `java.lang.Comparable`              | `java.util.Comparator`              |
+	| **Method**       | `compareTo(T obj)`                  | `compare(T obj1, T obj2)`           |
+	| **Sorting Logic**| Natural ordering (default)          | Custom ordering (external)          |
+	| **Class Modification** | Requires modifying the class  | No modification needed              |
+	| **Multiple Sorting** | Only one default ordering   | Multiple comparators possible       |
+	| **Usage**        | `Collections.sort(list)`            | `Collections.sort(list, comparator)`|
+
+	---
+
+	### **Example with Both**
+	```java
+	import java.util.*;
+
+	class Student implements Comparable<Student> {
+		String name;
+		int age;
+
+		@Override
+		public int compareTo(Student other) {
+			return this.age - other.age; // Natural order: age (ascending)
+		}
+	}
+
+	class NameComparator implements Comparator<Student> {
+		@Override
+		public int compare(Student s1, Student s2) {
+			return s1.name.compareTo(s2.name); // Sort by name
+		}
+	}
+
+	public class Main {
+		public static void main(String[] args) {
+			List<Student> students = new ArrayList<>();
+			students.add(new Student("Alice", 25));
+			students.add(new Student("Bob", 20));
+
+			// Natural ordering (Comparable)
+			Collections.sort(students); // Sorts by age
+
+			// Custom ordering (Comparator)
+			Collections.sort(students, new NameComparator()); // Sorts by name
+		}
+	}
+	```
+
+	---
+
+	### **When to Use Which?**
+	- Use `Comparable` for **default natural ordering** (e.g., `String`, `Integer` use it).
+	- Use `Comparator` for **flexible, multiple sorting strategies** (e.g., sorting employees by name, salary, or ID).
+
+	Both are widely used in Java collections (e.g., `TreeSet`, `TreeMap`, `Collections.sort()`). Java 8+ also supports `Comparator` with lambdas for concise syntax:
+	```java
+	students.sort(Comparator.comparing(Student::getName).thenComparing(Student::getAge));
+	``` 
+
+
+19.	Benefits in Concurrency
+		Immutability helps with concurrency in several ways:
+
+		Thread Safety: Immutable objects are inherently thread-safe because their state cannot change. No synchronization is needed when multiple threads access them.
+
+		No Race Conditions: Since the object can't be modified, there's no risk of one thread modifying it while another is reading it.
+
+		No Need for Defensive Copies: You don't need to make copies when passing immutable objects between threads.
+
+		Safe Sharing: Immutable objects can be freely shared between threads without synchronization.
+
+		Cache-Friendly: Immutable objects make excellent cache candidates since they never change.
+
+		Simplified Reasoning: Code is easier to reason about in concurrent contexts when you know objects won't change.
+		
+		
+		
+
+
+
+20.	# Memory Leak Scenarios in Java and How to Avoid Them
+
+		Memory leaks in Java occur when objects are no longer needed but still remain referenced, preventing garbage collection. Here are common scenarios and their solutions:
+
+		## Common Memory Leak Scenarios
+
+		### 1. **Static Collections**
+		```java
+		public class LeakyClass {
+			private static final List<Object> list = new ArrayList<>();
+			
+			public void addToCache(Object obj) {
+				list.add(obj); // Objects added will never be GC'd
+			}
+		}
+		```
+
+		**Solution:**
+		- Avoid using static collections for caching
+		- Use weak references (WeakHashMap) if caching is necessary
+		- Implement size limits and eviction policies
+
+		### 2. **Unclosed Resources**
+		```java
+		public void readFile() {
+			BufferedReader reader = new BufferedReader(new FileReader("file.txt"));
+			// Forgot to close reader
+		}
+		```
+
+		**Solution:**
+		- Always use try-with-resources:
+		```java
+		try (BufferedReader reader = new BufferedReader(new FileReader("file.txt"))) {
+			// use reader
+		}
+		```
+
+		### 4. **Inner Classes Holding Outer Class Reference**
+		```java
+		public class Outer {
+			private String largeData = "...";
+			
+			public Runnable getTask() {
+				return new Runnable() { // Anonymous inner class holds reference to Outer
+					public void run() {
+						System.out.println("Running");
+					}
+				};
+			}
+		}
+		```
+
+		**Solution:**
+		- Make the inner class static if it doesn't need outer class access
+		- Explicitly clear references when done
+
+		### 5. **String Intern Pool**
+		```java
+		String hugeString = readHugeStringFromFile();
+		hugeString = hugeString.intern(); // Added to permanent memory area
+		```
+
+		**Solution:**
+		- Avoid using `intern()` unless absolutely necessary
+		- Be cautious with large strings
+
+		## Best Practices to Avoid Memory Leaks
+
+		1. **Use Tools to Detect Leaks:**
+		   - VisualVM
+		   - Eclipse Memory Analyzer (MAT)
+		   - Java Flight Recorder
+
+		2. **Follow Good Coding Practices:**
+		   - Null out references when done
+		   - Prefer local variables over instance variables
+		   - Be cautious with static fields
+
+		3. **Understand Your Collections:**
+		   - Know when to use WeakHashMap, SoftReference, etc.
+		   - Clean up collections periodically
+
+		4. **Review Code for Common Patterns:**
+		   - Check for collections that grow without bound
+		   - Verify resource cleanup in finally blocks
+
+		5. **Monitor Memory Usage:**
+		   - Set up alerts for unusual memory patterns
+		   - Perform regular load testing
+
+		Remember that while Java has automatic garbage collection, it's not a substitute for proper memory management in your code.
+		
+		
+		
+		
+21.  Difference between shallow copy vs deep copy in Java.
+
+
+	A shallow copy in Java creates a new object but copies references for any object fields, meaning both original and copied objects share the same referenced instances. In contrast, a deep copy creates a new object and recursively duplicates all nested objects, making the copy fully independent from the original.[1][2][3][4][5]
+
+	### Shallow Copy
+	- Copies the object itself, but fields that are references (such as nested objects or arrays) are shared, so changes to these references in either the original or copy affect both objects.[3][8][1]
+	- It's faster and uses less memory because it only copies references, not actual object data.[2][1]
+	- Typical methods: the default `clone()` implementation in Java produces a shallow copy if not overridden.[4][7]
+
+	### Deep Copy
+	- Recursively creates new instances for all referenced objects, so changes to nested objects in the copy do not affect the original (and vice versa).[5][1][3]
+	- Slower and more memory-intensive, since it duplicates the entire object graph.[1][2]
+	- Requires custom logic or overriding the `clone()` method to copy nested objects properly.[7]
+
+	### Practical Example
+	If you have an object containing a reference to a list, a shallow copy gives you two objects pointing to the same list; a deep copy creates two objects, each with its own list containing the same elements.[6][8]
+
+	### Comparison Table
+
+	| Aspect                 | Shallow Copy                                    | Deep Copy                                        |
+	|------------------------|-------------------------------------------------|--------------------------------------------------|
+	| Object Level           | New object, same nested object references[1][3] | New object, new nested object instances[1][3] |
+	| Changes to Nested Data | Affect both objects[1][3][8]     | Isolated, changes affect only the copy[1][3]  |
+	| Speed/Memory           | Faster, less memory[1][2]             | Slower, more memory[1][2]              |
+	| Use Case               | When nested objects are immutable or sharing references is acceptable[1] | When full independence is required[1]               |
+
+
+
+
+
+22.	Marker Interface
+	A marker interface is an empty interface used to tag a class so the JVM or libraries apply special behavior. Common uses include enabling serialization, cloning, remote invocation, and performance hints such as random access in lists, along with custom, type-safe tagging in application code.
+
+	### What it is
+	A marker interface has no methods or fields; it exists purely to “mark” classes and convey metadata through type identity rather than behavior. This tag provides runtime type information and allows code to branch using instanceof or generic bounds without reflection or annotation processing.
+
+	### How it works
+	Platform and library code check for the presence of the marker type and unlock a capability or take a specific path, such as allowing Object.clone only if Cloneable is implemented or permitting Java serialization only if Serializable is present. The interface itself imposes no methods; the behavior is enforced by the JVM or framework components that recognize the type.
+
+	### Standard examples
+	- Serializable: Marks objects as eligible for Java’s built-in serialization mechanism and related I/O flows.
+	- Cloneable: Signals that Object.clone may be used; otherwise a CloneNotSupportedException is expected at runtime.
+	- Remote: Identifies remote objects for Java RMI so methods can be invoked across JVM boundaries.
+	- RandomAccess: Hints that a List supports fast, index-based random access (e.g., ArrayList), guiding algorithms to choose optimal paths.
+	- EventListener: Serves as a tagging superinterface in the Java event model to classify listener types.
+	- SingleThreadModel: An older servlet marker indicating single-threaded handling, now deprecated in modern servlet specs.
+
+	### When to use
+	- Type-safe flags that must be visible in the type system, enabling compile-time safety and simple instanceof checks without reflection.[1][5]
+	- Hardwired platform hooks like serialization, cloning, or RMI where the JVM/libraries already key off known marker types.[2][4]
+	- Lightweight, library-level hints (e.g., RandomAccess) where the presence of a type guides performance-sensitive algorithms.[5][4]
+
+	### Custom marker interfaces
+	It is common to define a custom empty interface and tag certain classes, then branch logic using instanceof to grant access or apply special handling without reflection or configuration files. This keeps policies discoverable in the type system and allows APIs to accept or reject only marked types via method signatures or generic bounds.[3][5][4]

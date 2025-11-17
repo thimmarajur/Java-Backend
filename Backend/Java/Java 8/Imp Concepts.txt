@@ -1,0 +1,8 @@
+1. Distinct by Specific Property of an Object. (Distinct name from Person Obj)
+2. Last repeated Letter/String
+3. find the first character that appears only once.
+4. Return the middle n elements from a list
+5. Find Nth Largest
+6. IntStream vs Stream<Integer>
+7. Factorial of a num
+8. Find department with max total salary

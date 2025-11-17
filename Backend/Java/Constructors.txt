@@ -1,0 +1,49 @@
+1. Private Constructor
+	A constructor with private access modifier.
+
+	Used to restrict object creation from outside the class.
+
+	Commonly used in Singleton design patterns.
+	
+2. Static Blocks
+	Static blocks are used to initialize static variables or perform one-time setup tasks for a class. They are executed when the class is loaded into memory, before any constructors or instance methods are called.
+
+	Key Points:
+	Static blocks are executed only once, regardless of how many objects are created.
+
+	They are defined using the static keyword and a block of code {}.
+	
+	
+3. Constructor in Abstract Classes
+	Abstract classes can have constructors, even though they cannot be instantiated directly. These constructors are used to initialize fields or perform setup tasks for subclasses.
+
+	Key Points:
+	Abstract class constructors are called when a subclass object is created.
+
+	They are useful for initializing common fields or enforcing constraints.
+	
+	
+4. Constructor in Interfaces (Java 8+)
+	Starting from Java 8, interfaces can have static methods and default methods, but they cannot have constructors. This is because interfaces cannot be instantiated directly.
+
+	Alternative:
+	Use abstract classes or factory methods if you need to enforce initialization logic.
+	
+	
+5. Can a constructor be final, static, or abstract?
+	final: No, a constructor cannot be final because it is not inherited.
+
+	static: No, a constructor cannot be static because it is used to initialize instance variables.
+
+	abstract: No, a constructor cannot be abstract because it must have a body to initialize the object.
+	
+	
+6. How would you create an immutable class using constructors?
+
+	Declare the class as final.
+
+	Make all fields private and final.
+
+	Initialize all fields in the constructor.
+
+	Do not provide setter methods.

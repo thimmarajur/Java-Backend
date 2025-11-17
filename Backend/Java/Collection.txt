@@ -1,0 +1,149 @@
+1.  Comparator vs Comparable
+	In Java, both Comparator and Comparable are interfaces used to sort collections of objects. However, they serve different purposes and are used in different scenarios. Here's a detailed comparison:
+
+	Comparable
+		Purpose: The Comparable interface is used to define the natural ordering of objects. It allows a class to compare its instances with other instances of the same class.
+
+		Interface: java.lang.Comparable
+
+		Method: int compareTo(T obj)
+
+			This method compares the current object (this) with the specified object (obj).
+
+		Returns: 
+			A negative integer if this is less than obj.
+
+			Zero if this is equal to obj.
+
+			A positive integer if this is greater than obj.
+
+		Usage: A class implements Comparable to define its natural order. For example, String and Integer implement Comparable to provide a natural ordering.
+		
+	Comparator
+		Purpose: The Comparator interface is used to define custom ordering for objects. It is useful when you want to sort objects in a way that is different from their natural order or when the class does not implement Comparable.
+
+		Interface: java.util.Comparator
+
+		Method: int compare(T obj1, T obj2)
+
+			This method compares two objects (obj1 and obj2).
+
+		Returns:
+
+			A negative integer if obj1 is less than obj2.
+
+			Zero if obj1 is equal to obj2.
+
+			A positive integer if obj1 is greater than obj2.
+
+		Usage: A Comparator is typically implemented as a separate class or using a lambda expression. It allows you to define multiple ways to sort objects.
+		
+		Collections.sort(numbers, Comparator.reverseOrder()); (for Integer , String List)
+		
+		Collections.sort(people, (p1, p2) -> p2.name.compareTo(p1.name));
+		people.sort(Comparator.comparing(Person::getName).reversed());
+
+
+
+2.	HashMap vs. HashSet – What Sets Them Apart?
+	In Java, HashMap and HashSet are both part of the Java Collections Framework, but they serve different purposes and have distinct characteristics. Here's a detailed comparison of the two:
+
+	1. Purpose
+		HashMap:
+
+			A key-value pair based collection.
+
+			Used to store and retrieve data in the form of key-value mappings.
+
+			Implements the Map interface.
+
+		HashSet:
+
+			A set based collection.
+
+			Used to store unique elements (no duplicates allowed).
+
+			Implements the Set interface.
+
+	2. Underlying Data Structure
+		HashMap:
+
+			Backed by a hash table.
+
+			Uses hashing to store and retrieve key-value pairs.
+
+		HashSet:
+
+			Internally uses a HashMap to store elements.
+
+			Only the keys of the HashMap are used, and the values are set to a dummy object (e.g., PRESENT).
+
+	3. Duplicates
+		HashMap:
+
+			Allows duplicate values but not duplicate keys.
+
+			If a duplicate key is inserted, the existing value is replaced.
+
+		HashSet:
+
+			Does not allow duplicate elements.
+
+			If a duplicate element is added, it is ignored.
+
+	4. Null Values
+		HashMap:
+
+			Allows one null key and multiple null values.
+
+		HashSet:
+
+			Allows one null element.
+
+	5. Ordering
+		HashMap:
+
+			Does not maintain any order of elements (unordered).
+
+			Use LinkedHashMap if insertion order is required.
+
+		HashSet:
+
+			Does not maintain any order of elements (unordered).
+
+			Use LinkedHashSet if insertion order is required.
+
+	6. Performance
+		HashMap:
+
+			Provides O(1) time complexity for basic operations (get, put, remove) on average.
+
+			Performance depends on the quality of the hash function and the load factor.
+
+		HashSet:
+
+			Provides O(1) time complexity for basic operations (add, remove, contains) on average.
+
+			Since it is backed by a HashMap, its performance is similar to HashMap.
+
+	7. Methods
+		HashMap:
+
+			Key methods: put(K key, V value), get(Object key), remove(Object key), containsKey(Object key), keySet(), values(), entrySet().
+
+		HashSet:
+
+			Key methods: add(E e), remove(Object o), contains(Object o), iterator().
+
+	8. Use Cases
+		HashMap:
+
+			Used when you need to store and retrieve data based on keys.
+
+			Example: Storing user profiles with usernames as keys.
+
+		HashSet:
+
+			Used when you need to store a collection of unique elements.
+
+			Example: Storing a list of unique words from a document.

@@ -1,0 +1,22 @@
+The Set interface is part of the Java Collections Framework and is used to store unique elements (no duplicates). Here's an overview and example of how to use it:
+
+Key Points about Set:
+	No Duplicates: A Set cannot contain duplicate elements.
+
+	Unordered: Most implementations (like HashSet) do not guarantee any specific order of elements.
+
+Common Implementations:
+
+	HashSet: Stores elements in a hash table (fast access, no order).
+
+	TreeSet: Stores elements in a sorted order (based on natural ordering or a custom comparator).
+
+	LinkedHashSet: Maintains insertion order.
+	
+	
+When to Use Which Implementation?
+	HashSet: Use when you need fast access and don't care about order.
+
+	TreeSet: Use when you need elements sorted.
+
+	LinkedHashSet: Use when you need to maintain insertion order.

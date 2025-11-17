@@ -1,0 +1,120 @@
+### **🚀 Java 8 Streams – Complete List of Methods with Examples**  
+
+Java 8 Streams provide a powerful way to process collections efficiently. Below is a **comprehensive list** of all commonly used **stream methods**, categorized for easy reference.  
+
+---
+
+## **📌 1. Stream Creation Methods**
+| Method | Description | Example |
+|--------|------------|---------|
+| `Stream.of(T… values)` | Creates a stream from multiple values. | `Stream.of(1, 2, 3, 4, 5);` |
+| `Stream.of(array)` | Converts an array into a stream. | `Stream.of(new int[]{1, 2, 3});` |
+| `Arrays.stream(array)` | Creates a stream from an array. | `Arrays.stream(new int[]{10, 20, 30});` |
+| `List.stream()` | Converts a list into a stream. | `List.of(1, 2, 3).stream();` |
+| `Stream.generate(Supplier<T>)` | Creates an infinite stream. | `Stream.generate(Math::random).limit(5);` |
+| `Stream.iterate(seed, UnaryOperator<T>)` | Generates an infinite stream using a function. | `Stream.iterate(1, n -> n + 1).limit(10);` |
+
+---
+
+## **📌 2. Intermediate Operations (Transformations)**
+These methods **modify** or **filter** elements in a stream and return a new stream.  
+
+| Method | Description | Example |
+|--------|------------|---------|
+| `filter(Predicate<T>)` | Filters elements based on a condition. | `list.stream().filter(x -> x > 10);` |
+| `map(Function<T, R>)` | Transforms elements from one type to another. | `list.stream().map(String::toUpperCase);` |
+| `flatMap(Function<T, Stream<R>>)` | Flattens nested structures into a single stream. | `list.stream().flatMap(Collection::stream);` |
+| `distinct()` | Removes duplicate elements. | `list.stream().distinct();` |
+| `sorted()` | Sorts elements in natural order. | `list.stream().sorted();` |
+| `sorted(Comparator<T>)` | Sorts elements using a custom comparator. | `list.stream().sorted(Comparator.reverseOrder());` |
+| `peek(Consumer<T>)` | Performs an action on each element without modifying the stream. | `list.stream().peek(System.out::println);` |
+| `limit(long n)` | Returns a stream of first `n` elements. | `list.stream().limit(5);` |
+| `skip(long n)` | Skips the first `n` elements. | `list.stream().skip(3);` |
+
+---
+
+## **📌 3. Terminal Operations (End of Stream)**
+These methods **consume** the stream and return a result.
+
+| Method | Description | Example |
+|--------|------------|---------|
+| `forEach(Consumer<T>)` | Performs an action for each element. | `list.stream().forEach(System.out::println);` |
+| `toArray()` | Converts the stream to an array. | `Integer[] arr = list.stream().toArray(Integer[]::new);` |
+| `collect(Collectors.toList())` | Collects elements into a `List`. | `List<Integer> result = list.stream().collect(Collectors.toList());` |
+| `collect(Collectors.toSet())` | Collects elements into a `Set`. | `Set<Integer> result = list.stream().collect(Collectors.toSet());` |
+| `collect(Collectors.toMap())` | Converts elements into a `Map`. | `list.stream().collect(Collectors.toMap(x -> x, x -> x * 2));` |
+| `reduce(BinaryOperator<T>)` | Reduces elements to a single value. | `list.stream().reduce(Integer::sum);` |
+| `count()` | Counts the elements in the stream. | `long count = list.stream().count();` |
+| `min(Comparator<T>)` | Finds the minimum element. | `list.stream().min(Integer::compareTo);` |
+| `max(Comparator<T>)` | Finds the maximum element. | `list.stream().max(Integer::compareTo);` |
+| `findFirst()` | Returns the first element (if available). | `list.stream().findFirst();` |
+| `findAny()` | Returns any element (useful for parallel streams). | `list.stream().findAny();` |
+| `anyMatch(Predicate<T>)` | Returns `true` if any element matches the condition. | `list.stream().anyMatch(x -> x > 10);` |
+| `allMatch(Predicate<T>)` | Returns `true` if all elements match the condition. | `list.stream().allMatch(x -> x > 10);` |
+| `noneMatch(Predicate<T>)` | Returns `true` if no elements match the condition. | `list.stream().noneMatch(x -> x > 10);` |
+
+---
+
+## **📌 4. Special Stream Types**
+Java provides specialized streams for primitive types (**int, double, long**) to improve performance.
+
+| Stream Type | Creation | Example |
+|-------------|---------|---------|
+| `IntStream` | `IntStream.of(1, 2, 3);` | `IntStream.range(1, 10).sum();` |
+| `LongStream` | `LongStream.of(10L, 20L, 30L);` | `LongStream.rangeClosed(1, 10).sum();` |
+| `DoubleStream` | `DoubleStream.of(2.3, 3.5, 4.7);` | `DoubleStream.generate(Math::random).limit(5);` |
+
+---
+
+## **📌 5. Collectors (Special Terminal Operations)**
+Collectors are used to transform stream results into **collections** or perform **aggregations**.
+
+| Collector | Description | Example |
+|-----------|------------|---------|
+| `Collectors.toList()` | Collects elements into a `List`. | `list.stream().collect(Collectors.toList());` |
+| `Collectors.toSet()` | Collects elements into a `Set`. | `list.stream().collect(Collectors.toSet());` |
+| `Collectors.toMap(Function, Function)` | Collects elements into a `Map`. | `list.stream().collect(Collectors.toMap(x -> x, x -> x * 2));` |
+| `Collectors.joining(", ")` | Joins elements into a single string. | `list.stream().map(String::valueOf).collect(Collectors.joining(", "));` |
+| `Collectors.summingInt(ToIntFunction)` | Sums integer values. | `list.stream().collect(Collectors.summingInt(x -> x));` |
+| `Collectors.averagingDouble(ToDoubleFunction)` | Computes average. | `list.stream().collect(Collectors.averagingDouble(x -> x));` |
+| `Collectors.groupingBy(Function)` | Groups elements into a `Map`. | `list.stream().collect(Collectors.groupingBy(x -> x % 2 == 0 ? "Even" : "Odd"));` |
+| `Collectors.partitioningBy(Predicate)` | Partitions elements into two groups. | `list.stream().collect(Collectors.partitioningBy(x -> x > 5));` |
+
+---
+
+## **📌 6. Parallel Streams (For Performance)**
+Parallel streams **split** the workload across multiple threads for better performance.
+
+| Method | Description | Example |
+|--------|------------|---------|
+| `parallelStream()` | Converts a collection to a parallel stream. | `list.parallelStream().forEach(System.out::println);` |
+| `sequential()` | Converts a parallel stream back to sequential. | `list.parallelStream().sequential();` |
+
+---
+
+## **🔥 Bonus Challenge – Combining Methods**
+Find the **second longest word** from a list:  
+```java
+List<String> words = List.of("apple", "banana", "cherry", "blueberry");
+
+String secondLongest = words.stream()
+    .sorted(Comparator.comparingInt(String::length).reversed())
+    .skip(1)
+    .findFirst()
+    .orElse("");
+
+System.out.println(secondLongest); // Output: banana
+```
+
+---
+
+### **🚀 Summary – Everything You Need to Know**
+✔ **Stream Creation:** `Stream.of()`, `Arrays.stream()`, `.stream()`  
+✔ **Transformations:** `filter()`, `map()`, `flatMap()`, `distinct()`, `sorted()`  
+✔ **Terminal Operations:** `forEach()`, `collect()`, `count()`, `reduce()`, `min()`, `max()`  
+✔ **Collectors:** `groupingBy()`, `partitioningBy()`, `joining()`, `summingInt()`  
+✔ **Parallel Streams:** `parallelStream()`, `sequential()`  
+
+---
+
+🔥 Now you've got **everything** on Java 8 Streams! Need **examples** or **performance optimizations**? Let me know! 🚀😎

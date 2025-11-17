@@ -1,0 +1,71 @@
+1. String and String Constant Pool in Java
+	In Java, String is an immutable class used to represent sequences of characters. Java optimizes memory usage for strings through a String Constant Pool.
+
+	a. Why is String Immutable?
+		✅ Security – Prevents modification of sensitive strings like passwords.
+		✅ Caching & Performance – Enables reuse in the String Constant Pool.
+		✅ Thread Safety – Immutable strings avoid synchronization issues.
+		✅ Efficient HashCode Caching – Hashcodes are cached for faster lookups.
+		
+	String s1 = "Hello"; // Stored in String Constant Pool
+	String s2 = "Hello"; // Reuses the same object from the pool
+	System.out.println(s1 == s2); // true (Both refer to the same memory location)
+	
+	String s3 = new String("Hello"); // Stored in heap memory
+	String s4 = new String("Hello");
+	System.out.println(s3 == s4); // false (Different objects in heap)
+	
+	String s = "Java" + "World"; // Optimized at compile-time
+	String a = "Java";
+	String b = "World";
+	String c = a + b; // Creates a new object in heap
+	System.out.println(s == c); // false (c is in heap, s is in SCP)
+	
+	
+	String x = new String("World"); // Stored in heap
+	String y = x.intern(); // Moves "World" to SCP
+	String z = "World"; // Already in SCP
+	System.out.println(x == y); // false (x is in heap, y is in SCP)
+	System.out.println(y == z); // true (Both refer to the same SCP object)
+	The intern() method ensures that a string is added to the string pool (if not already present) and returns a reference to the pooled string.
+	
+
+
+2. StringBuffer vs StringBuilder
+	
+	In Java, StringBuffer and StringBuilder are classes used to create and manipulate mutable sequences of characters. They are similar in functionality but differ in terms of thread safety and performance. Below is a detailed comparison:
+
+	Key Differences
+		Feature				StringBuffer							StringBuilder
+		Thread Safety		Thread-safe (synchronized)				Not thread-safe (not synchronized)
+		Performance			Slower due to synchronization			Faster due to lack of synchronization
+		Introduced In		Java 1.0								Java 1.5
+		Use Case			Multi-threaded environments				Single-threaded environments
+		
+	1. StringBuffer
+		Thread Safety: StringBuffer is thread-safe, meaning its methods are synchronized. This ensures that only one thread can access the object at a time.
+
+		Performance: Due to synchronization, StringBuffer is slower than StringBuilder.
+
+		Use Case: Use StringBuffer when working in a multi-threaded environment where thread safety is required.
+		
+	2. StringBuilder
+		Thread Safety: StringBuilder is not thread-safe, meaning its methods are not synchronized. This makes it faster but unsuitable for multi-threaded environments.
+
+		Performance: Due to the lack of synchronization, StringBuilder is faster than StringBuffer.
+
+		Use Case: Use StringBuilder in single-threaded environments where performance is critical.
+		
+		
+	Common Methods
+		Both StringBuffer and StringBuilder provide the same methods for manipulating strings:
+
+		append(): Adds text to the end of the sequence.
+
+		insert(): Inserts text at a specified position.
+
+		delete(): Removes characters from the sequence.
+
+		reverse(): Reverses the sequence.
+
+		toString(): Converts the sequence to a String.

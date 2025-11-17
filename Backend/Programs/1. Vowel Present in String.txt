@@ -1,0 +1,15 @@
+package com.cms.admin.controller;
+
+import java.util.Arrays;
+
+public class TestClass {
+
+	public static void main(String[] args) {
+		String input = "QWErty".toLowerCase();
+		String vowels = "aeiou";
+		boolean result =  Arrays.asList(vowels.split("")).stream().filter(vowel -> input.contains(vowel)).count() > 0 ? true : false;
+		System.out.println(result);
+
+	}
+
+}

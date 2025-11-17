@@ -1,0 +1,73 @@
+1. ArrayList and LinkedList 
+	Implementation:
+		ArrayList is implemented using a dynamic array, meaning elements are stored in contiguous memory locations. On the other hand, LinkedList is implemented using a doubly linked list, where each node contains data and references to both the previous and next nodes.
+
+	Memory Usage:
+		ArrayList is more memory-efficient because it only stores object references in an array. LinkedList, however, requires additional memory due to the overhead of storing pointers for the previous and next nodes along with the actual data.
+
+	Access Time:
+		In ArrayList, accessing an element using get(index) is O(1), as it provides direct access via indexing. However, in LinkedList, accessing an element is O(n) because it requires traversing the list from the beginning or the end to reach the desired index.
+
+	Insertion Performance:
+		When adding elements at the end, ArrayList has an average time complexity of O(1), except when resizing occurs. However, inserting in the middle requires shifting elements, making it O(n). In contrast, LinkedList offers O(1) insertion at the beginning or end since it only updates pointers. However, inserting at a specific index requires traversal, making it O(n).
+
+	Deletion Performance:
+		Removing an element from an ArrayList takes O(n) because all elements after the removed one need to be shifted. In LinkedList, deleting an element from the beginning or end takes O(1) since only references need to be updated. However, removing from the middle takes O(n) due to traversal.
+
+	Iteration and Search:
+		Iteration is generally faster in ArrayList because its elements are stored in contiguous memory, improving cache efficiency. Searching for an element using contains() has a time complexity of O(n) in both ArrayList and LinkedList, but ArrayList is slightly faster due to better memory locality.
+
+	Use Cases:
+		ArrayList is preferred when random access and faster reads are required. It is ideal for scenarios where elements are mostly read rather than modified frequently. LinkedList, on the other hand, is useful when frequent insertions and deletions are required, especially at the beginning or middle of the list.
+		
+		
+2. How to Make a List Thread-Safe in Java
+		In Java, ArrayList and LinkedList are not thread-safe by default. If multiple threads access and modify a list simultaneously, it can lead to race conditions, data inconsistency, or ConcurrentModificationException. Here are different ways to make a list thread-safe.
+		
+	a. Using Collections.synchronizedList() (Basic Synchronization)
+			Java provides Collections.synchronizedList() to wrap a list inside a synchronized version.
+			List<Integer> list = Collections.synchronizedList(new ArrayList<>());
+			synchronized (list) { // Required for iteration
+				for (int num : list) {
+					System.out.println(num);
+				}
+			}
+			
+			Pros:
+				Easy to use.
+				Provides basic synchronization.
+			Cons:
+				Still requires manual synchronization (synchronized block) for iteration.
+				Can cause performance bottlenecks due to locking.
+				
+				
+	b. Using CopyOnWriteArrayList (Optimized for Reads)
+			CopyOnWriteArrayList is a thread-safe alternative to ArrayList. It creates a new copy of the list on every modification.
+			CopyOnWriteArrayList<Integer> list = new CopyOnWriteArrayList<>().
+			Pros:
+				No need for explicit synchronization.
+				Safe for iteration (does not throw ConcurrentModificationException).
+			Cons:
+				High memory usage (creates a new list on every write).
+				Slow for frequent modifications.
+				
+				
+	c. Using Collections.synchronizedList() with Concurrent Locks (ReentrantLock)
+			For better control, use ReentrantLock instead of synchronized.
+			List<Integer> list = Collections.synchronizedList(new ArrayList<>());
+			ReentrantLock lock = new ReentrantLock();
+
+			lock.lock();
+			try {
+				list.add(100);
+				list.add(200);
+				list.add(300);
+			} finally {
+				lock.unlock();
+			}
+			
+			
+	Conclusion
+		For basic synchronization → Use Collections.synchronizedList().
+		For read-heavy operations → Use CopyOnWriteArrayList.
+		For high-concurrency control → Use ReentrantLock.

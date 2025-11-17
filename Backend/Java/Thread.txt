@@ -1,0 +1,223 @@
+1. Fail-Fast vs Fail-Safe in Java
+		In Java, fail-fast and fail-safe refer to how iterators behave when a collection is modified during iteration.
+
+		a. Fail-Fast Iterator
+			Throws ConcurrentModificationException if a collection is modified while iterating.
+			Works directly on the original collection and detects structural changes (e.g., add(), remove()).
+			Used in most Java non-concurrent collections like ArrayList, HashSet, HashMap, etc.
+		How It Works?
+			Fail-fast iterators use modCount (modification count) to track changes.
+				If modCount changes during iteration, ConcurrentModificationException is thrown.
+			Collections That Use Fail-Fast
+				ArrayList, LinkedList, HashSet, HashMap (normal iterators).
+				
+				
+		b. Fail-Safe Iterator
+			Does not throw ConcurrentModificationException, even if the collection is modified.
+			Works on a copy of the collection instead of the original.
+			Used in concurrent collections from java.util.concurrent package.
+		How It Works?
+			Fail-safe iterators work on a cloned copy of the collection.
+				Changes made during iteration do not affect the iterator's result.
+			Collections That Use Fail-Safe
+				CopyOnWriteArrayList, CopyOnWriteArraySet, ConcurrentHashMap, etc.
+	
+	
+
+2. How do you prevent deadlock in multithreaded applications?
+
+	To prevent deadlock in multithreaded applications, a combination of design principles and coding best practices must be applied. Deadlocks typically occur when multiple threads attempt to acquire locks on shared resources in such a way that a cyclic dependency forms, causing all threads involved to wait indefinitely.[3][7]
+
+	### Key Strategies to Prevent Deadlock
+
+	- **Impose a Lock Acquisition Order**  
+	  Always acquire multiple locks in a consistent, hierarchical order throughout your application. This method, known as lock hierarchy, prevents circular wait conditions, which are necessary for deadlock to occur.[2][11]
+
+	- **Use Try-Lock with Timeout**  
+	  Employ lock primitives (like `tryLock` in Java's `ReentrantLock`) with a timeout or non-blocking semantics. If a lock is not immediately available, the thread can release any held resources and try again later, avoiding indefinite waiting.[5][9]
+
+	- **Minimize Lock Hold Time**  
+	  Keep lock hold times as short as possible. Avoid performing lengthy operations, like I/O, while holding a lock. Release locks as soon as the protected resource is no longer needed to reduce contention.[6][11]
+
+	- **Avoid Nested Locks Where Possible**  
+	  Design algorithms to require only one lock at a time, whenever possible. This means redesigning data structures and logic to minimize the need for a thread to hold multiple locks simultaneously.[11]
+
+	- **Use Immutable Objects for Shared State**   
+	  Where appropriate, design shared data to be immutable. Immutable objects eliminate the need for locks since their state never changes, thus removing opportunities for deadlock.[5]
+
+	- **Eliminate One of the Four Coffman Conditions**  
+	  Deadlocks can only occur if four conditions exist: mutual exclusion, hold and wait, no preemption, and circular wait. By breaking any one of these—such as ensuring a thread cannot hold resources while requesting others (hold and wait)—deadlocks can be prevented.[7]
+
+	### Additional Best Practices
+
+	- **Thorough Testing and Analysis**  
+	  Simulate and stress-test your multithreaded code under concurrent loads to reveal potential deadlocks during development instead of in production.[6][11]
+
+	- **Document Locking Strategies**  
+	  Clearly document lock acquisition order and critical section guidelines in codebases where concurrency is required to prevent accidental introduction of inconsistent patterns by different developers.[6]
+
+	- **Use High-level Concurrency Utilities**  
+	  When possible, utilize well-tested concurrency abstractions such as thread-safe containers, concurrent queues, or transactional memory libraries, which are designed to reduce the likelihood of deadlocks.[6]
+	  
+	  
+	  
+3.	Explain volatile vs synchronized — when to use each.
+
+	Volatile is used when you need simple visibility of changes to a variable across threads, while synchronized is for scenarios that require both visibility and mutual exclusion to prevent race conditions or manage atomic operations across multiple variables or a critical section of code.[2][3][6]
+
+	### Volatile: When and Why
+
+	- Use volatile when multiple threads access a variable for reading and writing, but only visibility—not atomicity or mutual exclusion—is required.[6][2]
+	- Volatile ensures the latest value of a variable is visible to all threads immediately, but does not guarantee a single-threaded update or the atomicity of compound actions like incrementing a counter.[7][2]
+	- Common use cases include flags or state variables that act as signals or status indicators (e.g., a running flag for thread termination).[6][7]
+
+	### Synchronized: When and Why
+
+	- Use synchronized when you have a critical section of code, or when manipulation or access involves multiple variables or needs to be atomic.[3][2]
+	- Synchronized ensures only one thread at a time executes the synchronized method or block and provides both visibility and mutual exclusion for all variables accessed within that block or method.[5][7]
+	- Appropriate for counters, complex updates, or modifying shared object states to avoid race conditions, lost updates, or inconsistent states.[2][3]
+
+	### Key Differences
+
+	| Feature         | volatile                           | synchronized                         |
+	|-----------------|------------------------------------|--------------------------------------|
+	| Scope           | Only for variables[7]          | Methods or blocks[7]             |
+	| Visibility      | Ensures latest value is visible[2] | Ensures visibility for all variables[5] |
+	| Atomicity       | Not guaranteed[2]              | Guaranteed for critical section[5] |
+	| Mutual Exclusion| None[2]                        | Provided by locking[3]           |
+	| Overhead        | Lightweight[2][7]          | Higher due to locks[2][7]    |
+
+	### When to Use Each
+
+	- Use volatile for simple shared variable flags or state updates where only freshness is required and compound actions are not performed.[7][6]
+	- Use synchronized for access control on code sections or objects—where updates need to be atomic or involve multiple related variables—and thread safety is vital.[3][7]
+
+
+
+4.	Explain how Java handles immutability and why it’s important for multithreading.
+
+	Java uses immutability to ensure that certain objects, once created, cannot be altered. This property is critical for safe and efficient multithreading because immutable objects eliminate the risks associated with shared mutable state: if data cannot be changed, multiple threads cannot corrupt it or misread it due to race conditions.[5][6][7]
+
+	### How Java Handles Immutability
+
+	Java encourages immutability in several ways:
+	- Classes like `String` and wrapper types (`Integer`, etc.) are immutable by design. Once an object's state is set during creation, it cannot be changed.[7][9]
+	- Java 14+ introduced the `record` keyword, letting developers easily create immutable data classes whose fields are set once in their constructor and cannot be altered.[8][7]
+	- For custom classes, developers can enforce immutability by making the class and its fields `final`, omitting setter methods, and only exposing data through safe getters or copies of internal states.[6][7]
+
+	### Why Immutability Is Important for Multithreading
+
+	- **Thread Safety:** Immutable objects are inherently thread-safe. Threads can read from immutable objects simultaneously without needing synchronization mechanisms like locks, which reduces complexity and improves performance.[5][7]
+	- **Elimination of Race Conditions:** Since immutable objects cannot change after construction, race conditions—where threads interfere due to unsynchronized writes—are prevented.[2][5]
+	- **Visibility Guarantees:** The Java memory model ensures that the contents of immutable objects are fully visible to all threads after construction, eliminating the risk of threads seeing stale state (largely thanks to how final fields are treated in the JVM).[4][8]
+	- **Ease of Reasoning:** Immutable objects simplify debugging and reasoning about program logic, as developers need not track or safeguard object mutations across threads.[2][6]
+	- **Reliable Collections:** Objects whose states don’t change are safe to use as keys in hash-based collections, since their hashcodes won’t vary unpredictably.[9][7]
+
+	### Practical Example
+
+	Java’s `String` class exemplifies immutability: all string operations that seem to modify (e.g., `concat()`) actually return new objects. Multiple threads can share and use the same string object without risk, and its hashcode is predictable for the lifetime of the object.[7][9]
+
+	Overall, immutability is a cornerstone of safe, scalable multithreaded Java programming—it prevents an entire category of concurrency bugs, reduces boilerplate locking logic, and allows more reliable, high-performance applications.[4][6][8][9][2][5][7]
+
+
+
+5.	Executor Service
+	The **ExecutorService** in Java is an interface in the `java.util.concurrent` package that provides a high-level API for managing and controlling the execution of asynchronous tasks. It acts as a replacement for directly managing raw threads, offering a more structured and efficient way to handle concurrency.
+
+	It is essentially a **thread pool manager** that handles the lifecycle of threads (creation, execution, and termination), which improves resource utilization, especially when dealing with a large number of concurrent tasks.
+
+	---
+
+	## 🛠️ Key Components and Usage
+
+	### 1. Creation
+	You typically create an `ExecutorService` instance using the static factory methods provided by the **`Executors`** utility class:
+
+	* **`Executors.newFixedThreadPool(int nThreads)`**: Creates a thread pool with a fixed number of threads. If more tasks are submitted than the thread pool size, the extra tasks wait in a queue.
+	* **`Executors.newCachedThreadPool()`**: Creates an elastic thread pool that creates new threads as needed but reuses previously constructed threads when they are available. Idle threads are terminated after 60 seconds.
+	* **`Executors.newSingleThreadExecutor()`**: Creates an executor with a single worker thread. Tasks are guaranteed to be executed sequentially.
+	* **`Executors.newScheduledThreadPool(int corePoolSize)`**: Creates an executor that can schedule commands to run after a given delay or to execute periodically.
+
+	### 2. Task Submission
+	Tasks can be submitted to the `ExecutorService` using the following methods:
+
+	| Method | Task Type | Returns | Description |
+	| :--- | :--- | :--- | :--- |
+	| **`execute(Runnable command)`** 				 | `Runnable` | `void` | Executes the task asynchronously. No way to get a result or check status. |
+	| **`submit(Runnable task)`** 					 | `Runnable` | `Future<?>` | Submits a task and returns a `Future` object which can be used to check if the task is done. |
+	| **`submit(Callable<T> task)`** | `Callable<T>` | `Future<T>` | Submits a value-returning task and returns a `Future` object to retrieve the result of type `T`. |
+	| **`invokeAny(Collection<Callable<T>> tasks)`** | `Callable<T>` | `T` | Executes the tasks and returns the result of *one* task that completes successfully. |
+	| **`invokeAll(Collection<Callable<T>> tasks)`** | `Callable<T>` | `List<Future<T>>` | Executes all tasks and returns a list of `Future` objects after *all* have completed. |
+
+	### 3. Lifecycle Management
+	An `ExecutorService` will not automatically terminate when there are no tasks left; it must be explicitly shut down to reclaim resources.
+
+	* **`shutdown()`**: Initiates an **orderly shutdown**. Previously submitted tasks are executed, but no new tasks will be accepted.
+	* **`shutdownNow()`**: Attempts to halt all actively executing tasks, stops the processing of waiting tasks, and returns a list of the tasks that were awaiting execution.
+	* **`awaitTermination(long timeout, TimeUnit unit)`**: Blocks until all tasks have completed execution after a shutdown request, or the timeout occurs, or the current thread is interrupted.
+
+	---
+
+	## 💡 Why Use ExecutorService?
+
+	* **Resource Management**: It reuses a pool of threads, avoiding the overhead of creating and destroying a new thread for every task, which is far more efficient for high-volume, short-lived tasks.
+	* **Separation of Concerns**: It separates the task execution (what to run) from thread management (how and when to run it).
+	* **Controlled Concurrency**: It limits the number of threads (e.g., with `newFixedThreadPool`), preventing resource exhaustion that can occur from creating too many threads in an application.
+
+
+
+3.	Synchronised vs @Async
+	The core difference between the Java keyword `synchronized` and the Spring Framework annotation `@Async` lies in their **purpose**:
+
+	* **`synchronized`** is for **Concurrency Control/Thread Safety** (making code run sequentially in a multi-threaded environment).
+	* **`@Async`** is for **Asynchronous Execution** (making code run concurrently in a separate thread to improve performance/responsiveness).
+
+	Here is a breakdown of their characteristics and use cases:
+
+	---
+
+	## 🔒 `@Synchronized` (Keyword)
+
+	The `synchronized` keyword in Java is a language feature used for **thread synchronization** to prevent **race conditions** and ensure **thread safety**.
+
+	| Feature | Description |
+	| :--- | :--- |
+	| **Purpose** | To ensure **mutual exclusion**. Only one thread can execute a synchronized method or code block on a specific object at any given time. |
+	| **Execution** | **Synchronous** and **Blocking**. The calling thread must acquire a lock, execute the code, and then release the lock. Other threads attempting to access the synchronized code on the *same object* must wait. |
+	| **Mechanism** | It uses an **intrinsic lock** (monitor lock) associated with the object (for instance methods/blocks) or the class (for static methods/blocks). |
+	| **Goal** | **Data integrity** and **consistency** in shared mutable state. |
+	| **Use Case** | Protecting shared resources (like updating a counter, adding to a list, or modifying an object's state) from concurrent modification by multiple threads. |
+	| **Example** | `public **synchronized** void increment() { count++; }` |
+	| **Context** | Core Java concurrency mechanism. |
+
+	---
+
+	## 🚀 `@Async` (Spring Annotation)
+
+	The `@Async` annotation, primarily used in Spring Boot/Framework, is for **asynchronous execution**.
+
+	| Feature | Description |
+	| :--- | :--- |
+	| **Purpose** | To execute a task **concurrently** in a separate thread. The calling thread is **not blocked** and can continue its own execution immediately. |
+	| **Execution** | **Asynchronous** and **Non-blocking**. The method is offloaded to a different thread, typically from a thread pool (Task Executor). |
+	| **Mechanism** | Spring uses a **Task Executor** to manage a pool of worker threads. The original method call is proxied to run on one of these background threads. |
+	| **Goal** | **Improved responsiveness**, **scalability**, and **throughput** by delegating long-running or independent tasks. |
+	| **Use Case** | Tasks that take a long time and don't require an immediate result (e.g., sending an email, processing a batch job, calling an external API). |
+	| **Example** | `**@Async** public void sendEmail(String to, String body) { ... }` |
+	| **Context** | Spring framework feature (requires `@EnableAsync` on a configuration class). |
+
+	---
+
+	## ⚖️ Summary Table
+
+	| Feature | `synchronized` (Keyword) | `@Async` (Annotation) |
+	| :--- | :--- | :--- |
+	| **Goal** | **Thread Safety** (One at a time) | **Concurrency** (Run in the background) |
+	| **Execution** | Blocking / Sequential | Non-blocking / Concurrent |
+	| **What is used** | Intrinsic object/class lock | Task Executor (Thread Pool) |
+	| **Threads** | Forces multiple threads to wait and execute on **one** thread one after another. | Executes the task on a **separate** worker thread, freeing the calling thread. |
+	| **Where to use** | Critical sections of code that modify shared data. | Long-running tasks that don't need to block the main flow. |
+
+	**In short:**
+	* Use **`synchronized`** when you have multiple threads accessing the **same resource** and you need to prevent data corruption (i.e., you are fixing a concurrency *problem*).
+	* Use **`@Async`** when you want to execute a task **in parallel** to make your application faster and more responsive (i.e., you are using concurrency for performance *gain*).
