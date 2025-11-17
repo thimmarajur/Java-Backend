@@ -136,41 +136,36 @@ Explanation
 	5. Finally, the original constructor, B(), finishes printing its output.
 
 
-12.	Constructor Order with Instance Initializer Block
-	What is the output of the following code?
+12.	Initialization Order vs. Output
 
-							class Parent {
-							    { System.out.println("2. Parent instance initializer."); } // Instance Initializer Block
-							
-							    public Parent() {
-							        System.out.println("3. Parent constructor.");
-							    }
-							}
-							
-							class Child extends Parent {
-							    { System.out.println("5. Child instance initializer."); }
-							
-							    public Child() {
-							        System.out.println("6. Child constructor.");
-							    }
-							}
-							
-							public class OutputTest2 {
-							    public static void main(String[] args) {
-							        Child c = new Child();
-							    }
-							}
+					class Parent {
+					    static { System.out.println("1. Parent Static Block"); }
+					    
+					    { System.out.println("3. Parent Instance Block"); }
+					    
+					    public Parent() {
+					        System.out.println("4. Parent Constructor");
+					    }
+					}
+					
+					class Child extends Parent {
+					    { System.out.println("5. Child Instance Block"); }
+					    
+					    public Child() {
+					        System.out.println("6. Child Constructor");
+					    }
+					}
 
-Output -
-		2. Parent instance initializer.	
-		3. Parent constructor.
-		5. Child instance initializer.	
-		6. Child constructor.
-Explanation -
-	1. Implicit super() is called in Child().
-	2. The order of execution in the parent is: super() call (implicit/explicit) -> Instance Initializer Blocks -> Constructor Body.
-	3. After the parent is fully constructed, the child's instance initializer block runs.	
-	4. Finally, the rest of the Child() constructor body executes.
+	// In main: Parent p = new Parent(); Child c = new Child();
+	Answer:
+	
+	1. Parent Static Block
+	3. Parent Instance Block
+	4. Parent Constructor
+	3. Parent Instance Block
+	4. Parent Constructor
+	5. Child Instance Block
+	6. Child Constructor
 
 
 
@@ -199,3 +194,4 @@ Explanation -
 		 6️⃣ Use this() to call another constructor in the same class
 		 7️⃣ Use super() to call superclass constructor
 		 8️⃣ First line must be this() or super() (if used)
+
