@@ -216,3 +216,54 @@ Explanation
 		Explanation: The Derived class constructor, Derived(), does not explicitly call a superclass constructor using super(...). 				Therefore, the Java compiler attempts to insert an implicit super(); as the first statement.
 		
 		However, the Base class only defines a parameterized constructor (Base(int x)). It does not have a no-argument constructor 				(Base()). Since the compiler cannot find a matching no-argument constructor in Base, compilation fails.
+
+
+
+15.	Constructor Calling a Virtual Method
+
+						class Animal {
+						    public Animal() {
+						        whoAmI();
+						    }
+						    public void whoAmI() {
+						        System.out.println("I am an Animal.");
+						    }
+						}
+						
+						class Dog extends Animal {
+						    private String breed = "Lab";
+						    
+						    public Dog() {
+						        // implicit super() calls Animal constructor
+						        System.out.println("My breed is: " + breed);
+						    }
+						
+						    @Override
+						    public void whoAmI() {
+						        System.out.println("I am a Dog of breed: " + breed);
+						    }
+						}
+						
+						// In main: new Dog();
+	Answer:
+	
+		I am a Dog of breed: null
+		My breed is: Lab
+
+	Explanation: This is a classic tricky question demonstrating the danger of calling non-final methods in a constructor.
+		
+		new Dog() calls Dog() constructor.
+		
+		The implicit super() calls Animal().
+		
+		Inside Animal(), the virtual method whoAmI() is called. Since the object being constructed is a Dog, Java's polymorphism rules 			mean the Dog.whoAmI() method is executed.
+		
+		At this point, the Dog fields (like breed) have not yet been initialized (they get initialized right before the Dog constructor 		body runs). So, breed is still its default value, null.
+		
+		Dog.whoAmI() prints: I am a Dog of breed: null.
+		
+		Animal() finishes, and execution returns to Dog().
+		
+		Now, the Dog instance fields are initialized (breed is set to "Lab").
+		
+		Dog() prints: My breed is: Lab.
