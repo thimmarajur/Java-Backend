@@ -39,11 +39,135 @@
 	
 	
 6. How would you create an immutable class using constructors?
-
 	Declare the class as final.
-
 	Make all fields private and final.
-
 	Initialize all fields in the constructor.
-
 	Do not provide setter methods.
+
+7.	What is Constructor Overloading?
+	Constructor Overloading is the concept of having multiple constructors within the same class, as long as each constructor has a unique 	signature (a different number of parameters or different types/order of parameters). This allows an object to be initialized in 		various ways.
+
+8.	What is Constructor Chaining?
+	The process of a constructor calling another constructor within the same class (using this()) or calling a constructor of its 		immediate superclass (using super()). This is done to reuse initialization logic and ensure the proper initialization of the entire 	object hierarchy.
+
+9.	Can a constructor be inherited?
+	No, constructors are not inherited by subclasses. However, when an object of a subclass is created, the subclass constructor is 		responsible for explicitly or implicitly calling a constructor of its superclass (usually via super()).
+
+
+10.	Constructor Chaining (super()) in Inheritance
+	This demonstrates how constructors manage the initialization flow across the class hierarchy.
+
+Java
+
+					class Vehicle {
+					    private int maxSpeed;
+					
+					    // Superclass Constructor
+					    public Vehicle(int speed) {
+					        this.maxSpeed = speed;
+					        System.out.println("1. Vehicle constructor called. Speed: " + speed);
+					    }
+					}
+					
+					class Car extends Vehicle {
+					    private String model;
+					
+					    // Subclass Constructor
+					    public Car(String model, int speed) {
+					        // Must be the first statement! It calls the Vehicle(int) constructor.
+					        super(speed);
+					        this.model = model;
+					        System.out.println("2. Car constructor called. Model: " + model);
+					    }
+					}
+
+	// When you execute: Car myCar = new Car("Sedan", 180);
+	// Output will be:
+	// 1. Vehicle constructor called. Speed: 180
+	// 2. Car constructor called. Model: Sedan
+	❓ Questions on Chaining
+	In Example 2, what would happen if the super(speed); line was missing from the Car constructor?
+	
+	Answer: The compiler would try to insert the implicit call super(); as the first line. Since the Vehicle class does not have a no-argument constructor, the compilation would fail with a compile-time error.
+	
+	When an object of the Car class is instantiated, in what order are the fields initialized and the constructor bodies executed?
+	
+	Answer:
+	
+	Superclass Instance Variables are initialized to their default values (e.g., maxSpeed to 0).
+	
+	Superclass Constructor Body (Vehicle(int speed)) is executed.
+	
+	Subclass Instance Variables are initialized to their default values (e.g., model to null).
+	
+	Subclass Constructor Body (Car(String model, int speed)) is executed.
+
+11.	Chaining with this() and Implicit super()What is the output of the following code?Javaclass A {
+							public A() {
+							        System.out.println("A's default constructor.");
+							    }
+							}
+							
+							class B extends A {
+							    public B(String s) {
+							        System.out.println("B's parameterized constructor: " + s);
+							    }
+							    
+							    public B() {
+							        this("Hello");
+							        System.out.println("B's default constructor.");
+							    }
+							}
+							
+							public class OutputTest {
+							    public static void main(String[] args) {
+							        B b = new B();
+							    }
+							}
+Output -
+		A's default constructor.
+		B's parameterized constructor: Hello
+		B's default constructor
+Explanation
+	1. The new B() call invokes B() (the default constructor).B's parameterized constructor: Hello
+	2. Inside B(), the first statement is this("Hello"), which calls B(String s).
+	3. Inside B(String s), the first statement is the implicit super(), which calls the no-argument constructor of the superclass, 				A().B's default constructor.
+	4. After A() finishes, B(String s) finishes printing its output.
+	5. Finally, the original constructor, B(), finishes printing its output.
+
+
+12.	Constructor Order with Instance Initializer Block
+	What is the output of the following code?
+
+							class Parent {
+							    { System.out.println("2. Parent instance initializer."); } // Instance Initializer Block
+							
+							    public Parent() {
+							        System.out.println("3. Parent constructor.");
+							    }
+							}
+							
+							class Child extends Parent {
+							    { System.out.println("5. Child instance initializer."); }
+							
+							    public Child() {
+							        System.out.println("6. Child constructor.");
+							    }
+							}
+							
+							public class OutputTest2 {
+							    public static void main(String[] args) {
+							        Child c = new Child();
+							    }
+							}
+
+Output -
+		2. Parent instance initializer.	
+		3. Parent constructor.
+		5. Child instance initializer.	
+		6. Child constructor.
+Explanation -
+	1. Implicit super() is called in Child().
+	2. The order of execution in the parent is: super() call (implicit/explicit) -> Instance Initializer Blocks -> Constructor Body.
+	3. After the parent is fully constructed, the child's instance initializer block runs.	
+	4. Finally, the rest of the Child() constructor body executes.
