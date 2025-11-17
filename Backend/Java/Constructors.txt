@@ -195,3 +195,24 @@ Explanation
 		 7️⃣ Use super() to call superclass constructor
 		 8️⃣ First line must be this() or super() (if used)
 
+
+14.	The Superclass Constructor Dilemma
+
+							class Base {
+							    public Base(int x) {
+							        System.out.println("Base initialized with: " + x);
+							    }
+							}
+							
+							class Derived extends Base {
+							    public Derived() {
+							        System.out.println("Derived initialized.");
+							    }
+							}
+
+	// In main: new Derived();
+	Answer: This code results in a Compilation Error.
+	
+		Explanation: The Derived class constructor, Derived(), does not explicitly call a superclass constructor using super(...). 				Therefore, the Java compiler attempts to insert an implicit super(); as the first statement.
+		
+		However, the Base class only defines a parameterized constructor (Base(int x)). It does not have a no-argument constructor 				(Base()). Since the compiler cannot find a matching no-argument constructor in Base, compilation fails.
