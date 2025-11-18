@@ -161,10 +161,28 @@
 	}
 	```
 
+
+					// Simple POJO class to structure the error response
+			class ErrorResponse {
+			    private int status;
+			    private String message;
+			    
+			    // Constructor, Getters, Setters
+			    // ...
+			}
+			
+			// A simple custom exception (e.g., when a DB record isn't found)
+			class ResourceNotFoundException extends RuntimeException {
+			    public ResourceNotFoundException(String message) {
+			        super(message);
+			    }
+			}
+
 	### Key Benefits
 
 	  * **Centralization**: All exception-handling logic is in one place, making it easy to manage and update.
 	  * **Consistency**: Ensures that all API error responses follow a uniform format (e.g., a standard JSON structure with `status`, `message`, and `timestamp`).
 	  * **Decoupling**: Separates the **error-handling logic** from the **business logic** in your controllers and services, resulting in cleaner, more readable code.
+
 
 
