@@ -220,4 +220,90 @@
 
 	**In short:**
 	* Use **`synchronized`** when you have multiple threads accessing the **same resource** and you need to prevent data corruption (i.e., you are fixing a concurrency *problem*).
+
 	* Use **`@Async`** when you want to execute a task **in parallel** to make your application faster and more responsive (i.e., you are using concurrency for performance *gain*).
+
+
+
+
+	6.	Atomicity in Java threads means that a particular operation, or sequence of operations, is **guaranteed to execute completely without being interrupted** or observed in a partially finished state by any other thread. It's the core property that prevents data corruption in concurrent applications.
+	
+	If an operation is atomic, it effectively acts as a single, indivisible step from the perspective of the rest of the program.
+	
+	-----
+	
+	## 🛑 Why Atomicity is Necessary
+	
+	In Java, most basic operations are guaranteed to be atomic (like reading or writing a 32-bit `int`). However, common operations involving multiple steps are **not** atomic.
+	
+	The classic example is the **Read-Modify-Write** cycle:
+
+  * **Operation:** `counter++`
+  * **Non-Atomic Steps:**
+    1.  **Read:** A thread reads the current value of `counter` from memory.
+    2.  **Modify:** The thread increments the value locally.
+    3.  **Write:** The thread writes the new value back to memory.
+
+	If two threads execute this simultaneously, a **Race Condition** can occur, leading to lost updates.
+	
+			| Time | Thread 1 Action | Thread 2 Action | Counter Value |
+			| :--- | :--- | :--- | :--- |
+			| t1 | Reads Counter (0) | | 0 |
+			| t2 | | Reads Counter (0) | 0 |
+			| t3 | Increments (Local value is 1) | | 0 |
+			| t4 | | Increments (Local value is 1) | 0 |
+			| t5 | Writes Counter (1) | | 1 |
+			| t6 | | Writes Counter (1) | 1 |
+	
+	The expected final value should be **2**, but the non-atomic operation resulted in **1**.
+	
+	-----
+	
+	## ✅ Mechanisms to Achieve Atomicity
+	
+	In Java, you have two primary ways to make operations atomic:
+
+	### 1\. `synchronized` Keyword
+	
+			The `synchronized` keyword provides **mutual exclusion** (a lock). Only one thread can execute a `synchronized` block or method on a given object at a time. This makes all operations *inside* the block atomic with respect to other threads trying to enter the *same* block.
+
+								```java
+								class AtomicCounter {
+								    private int counter = 0;
+								
+								    // Makes the entire read-modify-write operation atomic
+								    public synchronized void increment() {
+								        counter++;
+								    }
+								}
+								```
+
+	### 2\. `java.util.concurrent.atomic` Package
+	
+			This package provides classes that support atomic operations on single variables without needing explicit locking, which often leads to better performance under high contention. These classes achieve atomicity using low-level, hardware-supported **Compare-and-Swap (CAS)** instructions.
+			
+			The key classes are:
+			
+			| Class | Purpose | Atomic Operation Example |
+			| :--- | :--- | :--- |
+			| **`AtomicInteger`** | Atomic operations on an `int`. | `getAndIncrement()` |
+			| **`AtomicLong`** | Atomic operations on a `long`. | `incrementAndGet()` |
+			| **`AtomicBoolean`** | Atomic operations on a `boolean`. | `compareAndSet(true, false)` |
+			| **`AtomicReference`** | Atomic operations on object references. | `compareAndSet(old, new)` |
+
+						```java
+						import java.util.concurrent.atomic.AtomicInteger;
+						
+						class AtomicCounter {
+						    private AtomicInteger counter = new AtomicInteger(0);
+						
+						    // Uses CAS internally, which is atomic
+						    public void increment() {
+						        counter.getAndIncrement();
+						    }
+						
+						    public int get() {
+						        return counter.get();
+						    }
+						}
+						```
