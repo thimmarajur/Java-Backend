@@ -480,12 +480,4 @@ Use `ThreadPoolExecutor` with bounded queue.
 
 ---
 
-If you want, I can also teach:
-
-✅ `ThreadPoolExecutor` (custom pool)
-✅ How to set corePoolSize, maxPoolSize
-✅ RejectionHandler
-✅ CompletableFuture (modern alternative to ExecutorService)
-
-Would you like next level?
 
