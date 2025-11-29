@@ -298,3 +298,122 @@ Override with user beans or properties
 ---
 
 
+4.Explain difference between @RequestParam, @PathVariable, and @RequestBody.
+
+
+Here is the **clear, interview-ready difference** between `@RequestParam`, `@PathVariable`, and `@RequestBody` in Spring Boot:
+
+---
+
+# **1. @RequestParam**
+
+### ✔ Used for **query parameters**
+
+These are the values passed **after `?` in the URL**.
+
+### **Example URL**
+
+```
+GET /users?age=25&city=Bangalore
+```
+
+### **Controller**
+
+```java
+@GetMapping("/users")
+public String getUsers(
+        @RequestParam int age,
+        @RequestParam(required = false, defaultValue = "Unknown") String city) {
+    return age + " " + city;
+}
+```
+
+### **When to use**
+
+* For **optional parameters**
+* For **filtering/sorting**
+* For small scalar values (int, String, boolean)
+
+---
+
+# **2. @PathVariable**
+
+### ✔ Used to extract **values from the URL path**
+
+Part of the **URI itself**, not a query parameter.
+
+### **Example URL**
+
+```
+GET /users/101/orders/999
+```
+
+### **Controller**
+
+```java
+@GetMapping("/users/{userId}/orders/{orderId}")
+public String getOrder(
+        @PathVariable("userId") int userId,
+        @PathVariable("orderId") int orderId) {
+    return userId + " - " + orderId;
+}
+```
+
+### **When to use**
+
+* For **identifiers** (id, code)
+* For **RESTful resource access**
+* For mandatory values that are part of the URI
+
+---
+
+# **3. @RequestBody**
+
+### ✔ Used to read **JSON/XML request body** and convert it into a Java object
+
+Spring uses **Jackson** to deserialize JSON → Java POJO.
+
+### **Example URL**
+
+```
+POST /users
+Content-Type: application/json
+```
+
+### **Request Body**
+
+```json
+{
+  "name": "John",
+  "age": 30
+}
+```
+
+### **Controller**
+
+```java
+@PostMapping("/users")
+public User createUser(@RequestBody User user) {
+    return user;
+}
+```
+
+### **When to use**
+
+* To send **complex objects**
+* For **POST/PUT** requests
+* For JSON payloads
+
+---
+
+# **Summary Table**
+
+| Annotation        | Where it appears?            | Typical Use                   | Example           |
+| ----------------- | ---------------------------- | ----------------------------- | ----------------- |
+| **@RequestParam** | Query string (`?key=value`)  | Filtering, optional inputs    | `/users?age=20`   |
+| **@PathVariable** | URL path segment             | Resource identifiers          | `/users/101`      |
+| **@RequestBody**  | HTTP request body (JSON/XML) | Create/update complex objects | POST JSON payload |
+
+---
+
+
