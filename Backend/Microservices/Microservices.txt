@@ -1,4 +1,5 @@
-     GetCustomerRequest request = new GetCustomerRequest();
+1.     InterService Communication
+GetCustomerRequest request = new GetCustomerRequest();
     request.bosId = userAcctInfo.getBosID();
     String url = getAbtUrl(agencyId)+"getcustomerDetails";
     String action= AdminMytixConstant.USER_ADMIN+"getCustomerDetails";
@@ -11,4 +12,163 @@
     }
     HttpEntity<Object> entity = new HttpEntity<>(request, headers);
 
+
 masAdminResponse = restUtil.doRequest(url, entity, MasAdminResponse.class);
+
+
+
+2.     API Gateway
+
+Here’s a **clear, interview-friendly** explanation of **API Gateway** and **why we need it**, with examples you can use in microservices interviews.
+
+---
+
+# ✅ **What Is an API Gateway?**
+
+**API Gateway is a single entry point** for all client requests in a microservices architecture.
+Instead of a client calling multiple microservices directly, **all requests first go through the Gateway**, which then routes them to the appropriate service.
+
+Think of it like a **front door** to all your backend services.
+
+---
+
+# ✅ **Why Do We Need an API Gateway?**
+
+Below are the real reasons interviewers expect:
+
+---
+
+## **1. Single Entry Point for All Clients**
+
+Without a gateway:
+
+* Mobile app calls service A, B, C
+* Web app calls service A, D
+* Internal tools call service E
+
+➡ Becomes messy, hard to maintain.
+
+With API Gateway:
+
+* All clients hit **ONE endpoint**.
+* Gateway does the routing internally.
+
+---
+
+## **2. Reduces Client Complexity**
+
+If a client has to call 5 services to show one screen → bad design.
+
+Gateway can:
+
+* Combine multiple service calls
+  (**API Aggregation / Composition**)
+* Return a single optimized response to the client
+
+Example:
+“Order Details Screen” may need:
+
+* Order Service
+* Payment Service
+* Shipping Service
+
+Gateway does all 3 calls → client gets one merged response.
+
+---
+
+## **3. Authentication and Authorization**
+
+Instead of every microservice checking JWT tokens or API keys:
+
+Gateway handles:
+
+* Authentication (e.g., OAuth2, JWT)
+* Authorization
+* Token validation
+* Rate limiting
+
+Microservices stay lightweight.
+
+---
+
+## **4. Cross-Cutting Concerns**
+
+Gateway centralizes logic like:
+
+* Logging
+* Request/Response transformation
+* Rate limiting
+* Caching
+* Monitoring
+* Security filtering
+* IP whitelisting/blacklisting
+
+This prevents code duplication across services.
+
+---
+
+## **5. Load Balancing & Routing**
+
+Routes requests to the correct service instance.
+
+Example:
+
+```
+/users → User Service  
+/orders → Order Service  
+/payments → Payment Service
+```
+
+If a service is down → Gateway can route to another instance.
+
+---
+
+## **6. Protocol Translation**
+
+Clients communicate in HTTP/JSON, but services may use:
+
+* REST
+* gRPC
+* AMQP
+* Kafka
+
+The Gateway can convert:
+
+* HTTP → gRPC
+* HTTP → Kafka message
+
+This gives flexibility to backend teams.
+
+---
+
+## **7. Hides Internal Architecture**
+
+Clients don’t need to know:
+
+* How many services exist
+* How many versions each service has
+* Whether a service is migrated or split
+
+You can change backend without affecting clients.
+
+---
+
+# 📌 **Example API Gateways**
+
+* **Spring Cloud Gateway (Java)**
+* **NGINX**
+* **Kong**
+* **Amazon API Gateway**
+* **Apigee**
+* **Zuul (legacy Netflix OSS)**
+
+---
+
+# 🎯 **Short and Perfect Interview Answer**
+
+> **API Gateway is a single entry point for all client requests in a microservices system.
+> It handles routing, authentication, rate limiting, logging, aggregation, and hides the internal architecture from clients.
+> We need it to reduce client complexity, centralize cross-cutting concerns, improve security, and provide flexible routing and load balancing.**
+
+---
+
