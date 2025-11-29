@@ -106,3 +106,195 @@ In Spring Framework, both `@Component` and `@Bean` are used to define beans in t
 	* Use `@Bean` when **manual creation or configuration** is needed.
 
 	Let me know if you want to see how both can be combined or used together in a project.
+
+
+
+3. What is Spring Boot auto-configuration? How does it work internally?
+
+Here’s a **clear, interview-focused** explanation of **Spring Boot Auto-Configuration** and **how it works internally** — exactly how Java/Spring interviews expect you to answer.
+
+---
+
+# ✅ **What is Spring Boot Auto-Configuration?**
+
+Spring Boot **auto-configuration** automatically configures your Spring application **based on the libraries present in the classpath** and the **properties you set in application.properties/yml**.
+
+You don’t write boilerplate configuration (DataSource, EntityManager, DispatcherServlet, RestTemplate, Jackson, Embedded Tomcat, etc.).
+Spring Boot detects what you need → configures it → registers beans.
+
+---
+
+# 🔥 **One-Line Definition (Interview Perfect)**
+
+**Auto-configuration is Spring Boot’s mechanism that automatically creates and configures beans based on classpath, existing beans, and external properties.**
+
+---
+
+# 🧠 **How Auto-Configuration Works Internally (Step-by-Step)**
+
+Let's break down the internal flow.
+
+---
+
+# ⚙️ 1. **@SpringBootApplication triggers @EnableAutoConfiguration**
+
+```java
+@SpringBootApplication
+public class DemoApplication {}
+```
+
+This annotation contains:
+
+```java
+@EnableAutoConfiguration
+@ComponentScan
+@Configuration
+```
+
+`@EnableAutoConfiguration` is what enables auto-config.
+
+---
+
+# ⚙️ 2. **Spring Boot loads auto-configuration class names**
+
+Spring Boot reads:
+
+```
+META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+```
+
+This file contains **all auto-config classes**, e.g.:
+
+```
+org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration
+org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration
+...
+```
+
+This is loaded using **Spring’s AutoConfigurationImportSelector**.
+
+---
+
+# ⚙️ 3. **Conditions are applied (@ConditionalXxx)**
+
+Each auto-config class uses `@Conditional` annotations:
+
+Examples:
+
+### ✔️ Based on classpath
+
+```java
+@ConditionalOnClass(DataSource.class)
+```
+
+→ Only load if JDBC is on classpath.
+
+### ✔️ Based on missing bean
+
+```java
+@ConditionalOnMissingBean(DataSource.class)
+```
+
+→ Only load DataSource if user didn’t define one.
+
+### ✔️ Based on property value
+
+```java
+@ConditionalOnProperty(name = "spring.datasource.url")
+```
+
+### ✔️ Based on environment
+
+```java
+@ConditionalOnWebApplication
+```
+
+So, auto-configs load only if **all conditions match**.
+
+---
+
+# ⚙️ 4. **Beans are created with default configurations**
+
+Example from `DataSourceAutoConfiguration`:
+
+```java
+@Bean
+@ConditionalOnMissingBean
+public DataSource dataSource() {
+    return DataSourceBuilder.create()
+            .url(environment.get("spring.datasource.url"))
+            .username(...)
+            .build();
+}
+```
+
+If you add your own DataSource bean, this auto-config **won’t run**.
+
+---
+
+# ⚙️ 5. **External Configuration Overrides Default Config**
+
+Values from **application.properties** override defaults:
+
+```
+spring.datasource.url=jdbc:mysql://localhost/test
+spring.datasource.username=root
+```
+
+Spring Boot uses **@ConfigurationProperties** to bind these values.
+
+---
+
+# ⚙️ 6. **Auto-Configuration Report (Conditional Evaluation Report)**
+
+You can see what was applied or skipped by enabling:
+
+```
+debug=true
+```
+
+Boot will print:
+
+* ✔️ auto configs that matched
+* ❌ auto configs that were skipped
+* ❓ reasons for skipping
+
+---
+
+# 🔄 Full Internal Flow Summary Diagram
+
+```
+@SpringBootApplication
+        ↓
+@EnableAutoConfiguration
+        ↓
+AutoConfigurationImportSelector loads auto-config classes
+        ↓
+Apply @Conditional checks
+        ↓
+Create default beans (DataSource, MVC, Jackson, etc.)
+        ↓
+Override with user beans or properties
+```
+
+---
+
+# 🏁 **Why Auto-Configuration is Powerful?**
+
+| Traditional Spring (XML/Java Config) | Spring Boot                       |
+| ------------------------------------ | --------------------------------- |
+| You configure everything manually    | Boot configures 80% automatically |
+| Boilerplate DataSource, MVC, Jackson | Beans created automatically       |
+| Lots of XML                          | Zero XML                          |
+| Hard to onboard new developers       | Easy and fast startup             |
+
+---
+
+# ⭐ Interview-Ready Summary (Use This!)
+
+**Spring Boot auto-configuration works by reading auto-config class names from the classpath, applying a series of `@Conditional` checks (like classpath, properties, missing beans), and automatically creating default beans. If the user defines a bean or property, Boot backs off. This is enabled through `@EnableAutoConfiguration`, which is part of `@SpringBootApplication`.**
+
+---
+
+
